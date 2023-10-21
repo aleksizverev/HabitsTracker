@@ -3,7 +3,7 @@ import UIKit
 final class StatisticsViewController: UIViewController {
     private let pageTitleLable: UILabel = {
         let label = UILabel()
-        label.text = "User stats to be done.."
+        label.text = "User stats to be done..."
         label.font = UIFont.systemFont(ofSize: 34, weight: UIFont.Weight.bold)
         label.textColor = UIColor(red: 0.102, green: 0.106, blue: 0.133, alpha: 1)
         label.translatesAutoresizingMaskIntoConstraints = false

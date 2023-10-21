@@ -14,7 +14,10 @@
 		17B8E77A2AE04AB700875EE0 /* SplashScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B8E7792AE04AB700875EE0 /* SplashScreenViewController.swift */; };
 		17B8E77C2AE04AD000875EE0 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B8E77B2AE04AD000875EE0 /* TabBarController.swift */; };
 		17B8E77E2AE04AE700875EE0 /* StatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B8E77D2AE04AE700875EE0 /* StatisticsViewController.swift */; };
-		17B8E7802AE04AFD00875EE0 /* TrackersListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B8E77F2AE04AFD00875EE0 /* TrackersListViewController.swift */; };
+		17B8E7802AE04AFD00875EE0 /* TrackersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B8E77F2AE04AFD00875EE0 /* TrackersViewController.swift */; };
+		17C23AFF2AE275B8003148BF /* TrackerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C23AFE2AE275B8003148BF /* TrackerCell.swift */; };
+		17C23B032AE2C123003148BF /* EmojiPicker in Frameworks */ = {isa = PBXBuildFile; productRef = 17C23B022AE2C123003148BF /* EmojiPicker */; };
+		17C23B072AE3FC6B003148BF /* TrackerTypeChoiceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C23B062AE3FC6B003148BF /* TrackerTypeChoiceViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,7 +30,9 @@
 		17B8E7792AE04AB700875EE0 /* SplashScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenViewController.swift; sourceTree = "<group>"; };
 		17B8E77B2AE04AD000875EE0 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		17B8E77D2AE04AE700875EE0 /* StatisticsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsViewController.swift; sourceTree = "<group>"; };
-		17B8E77F2AE04AFD00875EE0 /* TrackersListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersListViewController.swift; sourceTree = "<group>"; };
+		17B8E77F2AE04AFD00875EE0 /* TrackersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackersViewController.swift; sourceTree = "<group>"; };
+		17C23AFE2AE275B8003148BF /* TrackerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCell.swift; sourceTree = "<group>"; };
+		17C23B062AE3FC6B003148BF /* TrackerTypeChoiceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTypeChoiceViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17C23B032AE2C123003148BF /* EmojiPicker in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -64,13 +70,39 @@
 				17B8E7672AE0491B00875EE0 /* SceneDelegate.swift */,
 				17B8E7792AE04AB700875EE0 /* SplashScreenViewController.swift */,
 				17B8E77B2AE04AD000875EE0 /* TabBarController.swift */,
-				17B8E77F2AE04AFD00875EE0 /* TrackersListViewController.swift */,
 				17B8E77D2AE04AE700875EE0 /* StatisticsViewController.swift */,
+				17C23B002AE275BF003148BF /* Tracker */,
 				17B8E76E2AE0491C00875EE0 /* Assets.xcassets */,
 				17B8E7702AE0491C00875EE0 /* LaunchScreen.storyboard */,
 				17B8E7732AE0491C00875EE0 /* Info.plist */,
 			);
 			path = HabitsTracker;
+			sourceTree = "<group>";
+		};
+		17C23B002AE275BF003148BF /* Tracker */ = {
+			isa = PBXGroup;
+			children = (
+				17C23B052AE3FC4E003148BF /* TrackersCreation */,
+				17C23B042AE3FC37003148BF /* TrackersPresentation */,
+			);
+			path = Tracker;
+			sourceTree = "<group>";
+		};
+		17C23B042AE3FC37003148BF /* TrackersPresentation */ = {
+			isa = PBXGroup;
+			children = (
+				17C23AFE2AE275B8003148BF /* TrackerCell.swift */,
+				17B8E77F2AE04AFD00875EE0 /* TrackersViewController.swift */,
+			);
+			path = TrackersPresentation;
+			sourceTree = "<group>";
+		};
+		17C23B052AE3FC4E003148BF /* TrackersCreation */ = {
+			isa = PBXGroup;
+			children = (
+				17C23B062AE3FC6B003148BF /* TrackerTypeChoiceViewController.swift */,
+			);
+			path = TrackersCreation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -89,6 +121,9 @@
 			dependencies = (
 			);
 			name = HabitsTracker;
+			packageProductDependencies = (
+				17C23B022AE2C123003148BF /* EmojiPicker */,
+			);
 			productName = HabitsTracker;
 			productReference = 17B8E7622AE0491B00875EE0 /* HabitsTracker.app */;
 			productType = "com.apple.product-type.application";
@@ -117,6 +152,9 @@
 				Base,
 			);
 			mainGroup = 17B8E7592AE0491B00875EE0;
+			packageReferences = (
+				17C23B012AE2C123003148BF /* XCRemoteSwiftPackageReference "EmojiPicker" */,
+			);
 			productRefGroup = 17B8E7632AE0491B00875EE0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -143,11 +181,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17C23B072AE3FC6B003148BF /* TrackerTypeChoiceViewController.swift in Sources */,
 				17B8E7662AE0491B00875EE0 /* AppDelegate.swift in Sources */,
 				17B8E77E2AE04AE700875EE0 /* StatisticsViewController.swift in Sources */,
 				17B8E77C2AE04AD000875EE0 /* TabBarController.swift in Sources */,
+				17C23AFF2AE275B8003148BF /* TrackerCell.swift in Sources */,
 				17B8E7682AE0491B00875EE0 /* SceneDelegate.swift in Sources */,
-				17B8E7802AE04AFD00875EE0 /* TrackersListViewController.swift in Sources */,
+				17B8E7802AE04AFD00875EE0 /* TrackersViewController.swift in Sources */,
 				17B8E77A2AE04AB700875EE0 /* SplashScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -358,6 +398,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		17C23B012AE2C123003148BF /* XCRemoteSwiftPackageReference "EmojiPicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/htmlprogrammist/EmojiPicker";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		17C23B022AE2C123003148BF /* EmojiPicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 17C23B012AE2C123003148BF /* XCRemoteSwiftPackageReference "EmojiPicker" */;
+			productName = EmojiPicker;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 17B8E75A2AE0491B00875EE0 /* Project object */;
 }
