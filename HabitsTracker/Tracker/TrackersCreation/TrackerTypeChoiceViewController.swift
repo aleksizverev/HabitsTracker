@@ -9,13 +9,15 @@ final class TrackerTypeChoiceViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    private let habitButton: UIButton = {
+    private var habitButton: UIButton = {
         let button = UIButton()
         button.setTitle("Habit", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.layer.cornerRadius = 16
-        button.tintColor = .red
         button.backgroundColor = UIColor(named: "YP Black")
+        
+        button.addTarget(self, action: #selector(Self.habitCreationButtonDidTap), for: .touchUpInside)
+        
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -48,6 +50,11 @@ final class TrackerTypeChoiceViewController: UIViewController {
         applyConstraints()
     }
     
+    @objc
+    private func habitCreationButtonDidTap(){
+        let trackerCreationVC = UINavigationController(rootViewController: TrackerCreationViewController())
+        present(trackerCreationVC, animated: true)
+    }
     private func setUpNavBar(){
         self.navigationItem.title = "Tracker creation"
     }
