@@ -1,6 +1,8 @@
 import UIKit
 
 final class TrackerCell: UICollectionViewCell {
+    private var daysHabitCompletedCounter: Int = 0
+    private var habitCompletedToday: Bool = false
     private var cellDescriptionView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -33,13 +35,17 @@ final class TrackerCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         label.textColor = UIColor(named: "YP Black")
-        label.text = "1 day"
+        label.text = "0 days"
         return label
     }()
     private var completionButton: UIButton = {
-        let button = UIButton.systemButton(with: UIImage(named: "CompletionButton")!, target: nil, action: nil) //TODO: remove force unwrap
+        let image = UIImage(named: "CompletionButton") ?? UIImage(systemName: "plus")
+        let button = UIButton.systemButton(
+            with: image!,
+            target: self,
+            action: #selector(Self.completionButtonDidTap))
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.tintColor = .cyan
+        button.layer.cornerRadius = 20
         return button
     }()
     
@@ -65,7 +71,33 @@ final class TrackerCell: UICollectionViewCell {
     func setCompletionButtonTintColor(color: UIColor){
         completionButton.tintColor = color
     }
+    func setHabitStatisticsLabelDays(days: Int) {
+        statisticsLabel.text = daysHabitCompletedCounter == 1
+        ? String(daysHabitCompletedCounter) + " day"
+        : String(daysHabitCompletedCounter) + " days"
+    }
     
+    @objc
+    private func completionButtonDidTap() {
+        if !habitCompletedToday {
+            daysHabitCompletedCounter += 1
+            habitCompletedToday = true
+        } else {
+            daysHabitCompletedCounter -= 1
+            habitCompletedToday = false
+        }
+        setHabitStatisticsLabelDays(days: daysHabitCompletedCounter)
+        changeCompletionButtonState()
+    }
+    private func changeCompletionButtonState() {
+        if !habitCompletedToday {
+            completionButton.setImage(UIImage(named: "CompletionButton"), for: .normal)
+            completionButton.alpha = 1
+        } else {
+            completionButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            completionButton.alpha = 0.3
+        }
+    }
     private func addSubviews() {
         contentView.addSubview(cellDescriptionView)
         contentView.addSubview(statisticsLabel)

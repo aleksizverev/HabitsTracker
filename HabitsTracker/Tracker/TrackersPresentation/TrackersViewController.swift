@@ -1,22 +1,23 @@
 import UIKit
 
 final class TrackersListViewController: UIViewController {
-    private var categories: [TrackerCategory]? = [
+    private var allCategories: [TrackerCategory]? = [
         TrackerCategory(
             title: "Household",
             assignedTrackers: [
-                Tracker(id: 1, title: "Pour the flowers", color: .magenta, emoji: "❤️", schedule: nil)
+                Tracker(id: 1, title: "Pour the flowers", color: .magenta, emoji: "❤️", schedule: [1, 2, 5])
             ]
         ),
         TrackerCategory(
             title: "Happy things",
             assignedTrackers: [
-                Tracker(id: 2, title: "The cat blocked the camera on call", color: .orange, emoji: "😻", schedule: nil),
-                Tracker(id: 3, title: "Grandma sent postcard in Telegram", color: .red, emoji: "🌺", schedule: nil),
-                Tracker(id: 4, title: "Dates in April", color: .blue, emoji: "❤️", schedule: nil)
+                Tracker(id: 2, title: "The cat blocked the camera on call", color: .orange, emoji: "😻", schedule: [2, 3, 5]),
+                Tracker(id: 3, title: "Grandma sent postcard in Telegram", color: .red, emoji: "🌺",     schedule: [4, 5, 7]),
+                Tracker(id: 4, title: "Dates in April", color: .blue, emoji: "❤️",                      schedule: [6, 7, 1])
             ]
         )
     ]
+    private var currentCategories: [TrackerCategory]?
     private var completedTrackers: [TrackerRecord]?
     private var pageTitleLable: UILabel = {
         let label = UILabel()
@@ -26,13 +27,13 @@ final class TrackersListViewController: UIViewController {
         label.textColor = UIColor(named: "YP Black")
         return label
     }()
-    private var searchField: UISearchTextField = {
-        let searchField = UISearchTextField()
-        searchField.translatesAutoresizingMaskIntoConstraints = false
-        searchField.placeholder = "Search"
-        searchField.backgroundColor = UIColor(named: "YP Background")
-        searchField.layer.cornerRadius = 10
-        return searchField
+    private var searchBar: UISearchBar = {
+        let bar = UISearchBar()
+        bar.translatesAutoresizingMaskIntoConstraints = false
+        bar.placeholder = "Search"
+        bar.backgroundColor = .white
+        bar.searchBarStyle = .minimal
+        return bar
     }()
     private lazy var emptyPagePlaceholderImageView: UIImageView = {
         let imageView = UIImageView()
@@ -61,6 +62,8 @@ final class TrackersListViewController: UIViewController {
         setUpNavBar()
         setUpCollectionView()
         
+        loadCategoriesForToday()
+        
         addSubviews()
         applyConstraints()
     }
@@ -70,6 +73,8 @@ final class TrackersListViewController: UIViewController {
         let trackertypeChoiceVC = UINavigationController(rootViewController: TrackerTypeChoiceViewController())
         present(trackertypeChoiceVC, animated: true)
     }
+    
+    
     private func setUpNavBar(){
         let image = UIImage(named: "AddTrackerButton")
         let button = UIBarButtonItem(image: image,
@@ -86,7 +91,11 @@ final class TrackersListViewController: UIViewController {
         datePicker.locale = Locale(identifier: "fi")
         datePicker.clipsToBounds = true
         datePicker.calendar.firstWeekday = 2
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+    }
+    private func setUpSearchBar(){
+        searchBar.delegate = self
     }
     private func setUpCollectionView(){
         collectionView.dataSource = self
@@ -102,7 +111,7 @@ final class TrackersListViewController: UIViewController {
     }
     private func addSubviews() {
         view.addSubview(pageTitleLable)
-        view.addSubview(searchField)
+        view.addSubview(searchBar)
         view.addSubview(collectionView)
         view.addSubview(emptyPagePlaceholderImageView)
         view.addSubview(emptyPagePlaceholderText)
@@ -113,9 +122,9 @@ final class TrackersListViewController: UIViewController {
             pageTitleLable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             pageTitleLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
             
-            searchField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            searchField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            searchField.topAnchor.constraint(equalTo: pageTitleLable.bottomAnchor, constant: 7),
+            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
+            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
+            searchBar.topAnchor.constraint(equalTo: pageTitleLable.bottomAnchor),
             
             emptyPagePlaceholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             emptyPagePlaceholderImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -126,29 +135,108 @@ final class TrackersListViewController: UIViewController {
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: searchField.bottomAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -83), // TODO: change to safe area?
+            collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
         ])}
-    private func createNewCategory(named categoryName: String, assignedTrackers: [Tracker]?) {
-        let category = TrackerCategory(title: categoryName, assignedTrackers: [])
-        var newCategories = categories
-        newCategories?.append(category)
-        categories = newCategories
+    private func getCurrentDayNaumber(date: Date) -> Int {
+        let myCalendar = Calendar(identifier: .gregorian)
+        let weekDay = myCalendar.component(.weekday, from: date)
+        return weekDay
     }
-    private func addNewTracker(tracker: Tracker, toCategory category: TrackerCategory) {
-        guard let categories = categories else {
-            return
-        }
-        
-        categories.forEach { existingCategory in
-            if existingCategory.title == category.title {
-                var trackersList = existingCategory.assignedTrackers
-                trackersList.append(tracker)
-                createNewCategory(named: category.title, assignedTrackers: trackersList)
-            } else {
-                createNewCategory(named: category.title, assignedTrackers: [tracker])
+    
+    @objc
+    private func datePickerValueChanged(_ sender: UIDatePicker){
+        let senderDate = sender.date
+        let weekDay = getCurrentDayNaumber(date: senderDate)
+        updateCurrentCategories(forDayOfTheWeek: weekDay)
+        performAnimatedCollectionUpdates()
+    }
+    
+    private func loadCategoriesForToday() {
+        updateCurrentCategories(forDayOfTheWeek: getCurrentDayNaumber(date: Date()))
+        collectionView.reloadData()
+    }
+    
+    private func updateCurrentCategories(forDayOfTheWeek dayNumber: Int){
+        currentCategories = []
+        allCategories?.forEach { category in
+            category.assignedTrackers.forEach { tracker in
+                if let schedule = tracker.schedule,
+                   schedule.contains(dayNumber){
+                    currentCategories = addNewCategory(toList: currentCategories ?? [], named: category.title, assignedTrackers: [tracker])
+                }
             }
         }
+    }
+    
+    private func performAnimatedCollectionUpdates() {
+        guard let currentCategories = currentCategories else {
+            collectionView.reloadData()
+            return
+        }
+        collectionView.reloadData()
+        //нужно брать данные allCategories но индексы из currentCategories?
+//        collectionView.performBatchUpdates {
+//            var indexes: [IndexPath] = []
+//            currentCategories.indices.forEach { catNum in
+//                currentCategories[catNum].assignedTrackers.indices.forEach { trackerNum in
+//                    indexes.append(IndexPath(item: trackerNum, section: catNum))
+//                }
+//            }
+//            collectionView.insertItems(at: indexes)
+//        }
+    }
+
+    private func addNewCategory(toList oldCategoriesList: [TrackerCategory],
+                                named categoryName: String,
+                                assignedTrackers trackers: [Tracker]?) -> [TrackerCategory] {
+        /*
+         If category already exists, then we don't need to create a new one. We have to check the list
+         of trackers and update it(if it's empty). Otherwise, do nothing. It's important no to forget
+         to do Batch Updates after creation of new categories list.
+         */
+        var newTrackersList: [Tracker] = []
+        oldCategoriesList.forEach { existingCategory in
+            if existingCategory.title == categoryName {
+                newTrackersList = existingCategory.assignedTrackers
+            }
+        }
+        if let trackers = trackers {
+            newTrackersList.append(contentsOf: trackers)
+        }
+        
+    
+        /* Creates new category */
+        let category = TrackerCategory(title: categoryName, assignedTrackers: newTrackersList)
+        
+        /*
+         Creates new category list. First, adds all categories which name is not the same as new one.
+         After all adds new/update category
+         */
+        var newCategoriesList: [TrackerCategory] = []
+        oldCategoriesList.forEach { existingCategory in
+            if existingCategory.title != categoryName {
+                newCategoriesList.append(existingCategory)
+            }
+        }
+        newCategoriesList.append(category)
+        
+        return newCategoriesList
+    }
+
+    func printText(text: String) {
+        print("Editing began")
+    }
+}
+
+// MARK: - UISearchBarDelegatesdfdskljkl
+extension TrackersListViewController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        printText(text: searchText) // no reaction!
+    }
+
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+
     }
 }
 
@@ -173,7 +261,7 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
         }
         
         let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackerCellHeader
-        guard let categories = categories else { return view }
+        guard let categories = currentCategories else { return view }
         view.titleLabel.text = categories[indexPath.section].title
 
         return view
@@ -199,13 +287,13 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - UICollectionViewDataSource
 extension TrackersListViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        guard let categories = categories else { return 1 }
+        guard let categories = currentCategories else { return 1 }
         return categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if let categories = categories {
+        if let categories = currentCategories {
             if !categories.isEmpty{
                 return categories[section].assignedTrackers.count
             }
@@ -220,7 +308,7 @@ extension TrackersListViewController: UICollectionViewDataSource {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrackerCell", for: indexPath) as! TrackerCell // TODO: change!!
         
-        guard let categories = categories else { return cell }
+        guard let categories = currentCategories else { return cell }
         
         cell.setHabitDescriptionName(name: categories[section].assignedTrackers[row].title)
         cell.setHabitEmoji(emoji: categories[section].assignedTrackers[row].emoji)

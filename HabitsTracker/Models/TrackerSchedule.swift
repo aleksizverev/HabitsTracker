@@ -1,5 +1,5 @@
 import Foundation
 
 struct TrackerSchedule {
-    let days: [Date]
+    let schedule: [Int]
 }

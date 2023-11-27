@@ -20,5 +20,313 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9AECFC0A-9639-43CE-B67B-A741BD8F4342"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HabitsTracker/Tracker/TrackersPresentation/TrackerCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "97"
+            endingLineNumber = "97"
+            landmarkName = "changeCompletionButtonState()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "14F7AB7A-C1AC-4939-A5E2-8067B7F34036"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "234"
+            endingLineNumber = "234"
+            landmarkName = "searchBar(_:textDidChange:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "14F7AB7A-C1AC-4939-A5E2-8067B7F34036 - 4e23ec7aaaa03c50"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBar(_: __C.UISearchBar, textDidChange: Swift.String) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "224"
+                  endingLineNumber = "224"
+                  offsetFromSymbolStart = "68">
+               </Location>
+               <Location
+                  uuid = "14F7AB7A-C1AC-4939-A5E2-8067B7F34036 - 4e23ec7aaaa03c73"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBar(_: __C.UISearchBar, textDidChange: Swift.String) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "225"
+                  endingLineNumber = "225"
+                  offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  uuid = "14F7AB7A-C1AC-4939-A5E2-8067B7F34036 - 4e23ec7aaaa03c12"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBar(_: __C.UISearchBar, textDidChange: Swift.String) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "226"
+                  endingLineNumber = "226"
+                  offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  uuid = "14F7AB7A-C1AC-4939-A5E2-8067B7F34036 - 4e23ec7aaaa03c8e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBar(_: __C.UISearchBar, textDidChange: Swift.String) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "230"
+                  endingLineNumber = "230"
+                  offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  uuid = "14F7AB7A-C1AC-4939-A5E2-8067B7F34036 - 4e23ec7aaaa03f0a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBar(_: __C.UISearchBar, textDidChange: Swift.String) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "234"
+                  endingLineNumber = "234"
+                  offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  uuid = "14F7AB7A-C1AC-4939-A5E2-8067B7F34036 - 4e23ec7aaaa03fc4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBar(_: __C.UISearchBar, textDidChange: Swift.String) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "236"
+                  endingLineNumber = "236"
+                  offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  uuid = "14F7AB7A-C1AC-4939-A5E2-8067B7F34036 - 4e23ec7aaaa03f25"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBar(_: __C.UISearchBar, textDidChange: Swift.String) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "235"
+                  endingLineNumber = "235"
+                  offsetFromSymbolStart = "64">
+               </Location>
+               <Location
+                  uuid = "14F7AB7A-C1AC-4939-A5E2-8067B7F34036 - 4e23ec7aaaa03ebe"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBar(_: __C.UISearchBar, textDidChange: Swift.String) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "246"
+                  endingLineNumber = "246"
+                  offsetFromSymbolStart = "64">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DE6F22EA-BCE8-44BE-8747-9B94C74D7551"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "238"
+            endingLineNumber = "238"
+            landmarkName = "searchBarTextDidEndEditing(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "DE6F22EA-BCE8-44BE-8747-9B94C74D7551 - bc9a57c9c3750fbd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBarTextDidEndEditing(__C.UISearchBar) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "228"
+                  endingLineNumber = "228"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "DE6F22EA-BCE8-44BE-8747-9B94C74D7551 - bc9a57c9c3750fff"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBarTextDidEndEditing(__C.UISearchBar) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "230"
+                  endingLineNumber = "230"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "DE6F22EA-BCE8-44BE-8747-9B94C74D7551 - bc9a57c9c3750fd8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBarTextDidEndEditing(__C.UISearchBar) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "231"
+                  endingLineNumber = "231"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "DE6F22EA-BCE8-44BE-8747-9B94C74D7551 - bc9a57c9c3750c54"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBarTextDidEndEditing(__C.UISearchBar) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "235"
+                  endingLineNumber = "235"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "DE6F22EA-BCE8-44BE-8747-9B94C74D7551 - bc9a57c9c3750cd0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBarTextDidEndEditing(__C.UISearchBar) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "239"
+                  endingLineNumber = "239"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "DE6F22EA-BCE8-44BE-8747-9B94C74D7551 - bc9a57c9c3750d12"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBarTextDidEndEditing(__C.UISearchBar) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "241"
+                  endingLineNumber = "241"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "DE6F22EA-BCE8-44BE-8747-9B94C74D7551 - bc9a57c9c3750d31"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBarTextDidEndEditing(__C.UISearchBar) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "240"
+                  endingLineNumber = "240"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  uuid = "DE6F22EA-BCE8-44BE-8747-9B94C74D7551 - bc9a57c9c37512a4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "HabitsTracker.TrackersListViewController.searchBarTextDidEndEditing(__C.UISearchBar) -&gt; ()"
+                  moduleName = "HabitsTracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "251"
+                  endingLineNumber = "251"
+                  offsetFromSymbolStart = "20">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F2A66268-584E-4846-978D-E63750D3E30D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "160"
+            endingLineNumber = "160"
+            landmarkName = "updateCurrentCategories(forDayOfTheWeek:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
