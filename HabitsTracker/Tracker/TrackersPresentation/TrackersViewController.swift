@@ -1,41 +1,36 @@
 import UIKit
 
 final class TrackersListViewController: UIViewController {
+    
+    // MARK: - LogicVariables
     private var allCategories: [TrackerCategory] = [
         TrackerCategory(
             title: "Household",
             assignedTrackers: [
-                Tracker(id: 1, title: "Pour the flowers", color: .magenta, emoji: "❤️", schedule: [1, 2, 5])
+                Tracker(id: 1, title: "Pour the flowers", color: .magenta, emoji: "❤️", schedule: [1, 2, 3, 4, 5])
             ]
         ),
         TrackerCategory(
             title: "Happy things",
             assignedTrackers: [
-                Tracker(id: 2, title: "The cat blocked the camera on call", color: .orange, emoji: "😻", schedule: [2, 3, 5]),
-                Tracker(id: 3, title: "Grandma sent postcard in Telegram", color: .red, emoji: "🌺",     schedule: [4, 5, 7]),
-                Tracker(id: 4, title: "Dates in April", color: .blue, emoji: "❤️",                      schedule: [6, 7, 1])
+                Tracker(id: 2, title: "The cat blocked the camera on call", color: .orange, emoji: "😻", schedule: [1, 2, 3, 4, 5]),
+                Tracker(id: 3, title: "Grandma sent postcard in Telegram", color: .red, emoji: "🌺",     schedule: [1, 2, 3, 4, 5]),
+                Tracker(id: 4, title: "Dates in April", color: .blue, emoji: "❤️",                      schedule: [1, 2, 3, 4, 5,])
             ]
         )
     ]
     private var currentCategories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord]?
-    private var pageTitleLable: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Trackers"
-        label.font = UIFont.systemFont(ofSize: 34, weight: .bold)
-        label.textColor = UIColor(named: "YP Black")
-        return label
-    }()
-    private var searchBar: UISearchBar = {
-        let bar = UISearchBar()
-        bar.translatesAutoresizingMaskIntoConstraints = false
-        bar.placeholder = "Search"
-        bar.backgroundColor = .white
-        bar.searchBarStyle = .minimal
-        return bar
-    }()
-    private lazy var emptyPagePlaceholderImageView: UIImageView = {
+    private var completedTrackers: [TrackerRecord] = [
+        TrackerRecord(id: 1, date: Date()),
+        TrackerRecord(id: 3, date: Date())
+    ]
+    private var currentDatePickerDateValue: Date = Date()
+    private let myCalendar = Calendar(identifier: .gregorian)
+    
+    // MARK: - UIVariables
+    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private var searchController = UISearchController()
+    private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView()
         let image = UIImage(named: "TrackersListPlaceholder")
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -43,7 +38,7 @@ final class TrackersListViewController: UIViewController {
         imageView.isHidden = true
         return imageView
     }()
-    private lazy var emptyPagePlaceholderText: UILabel = {
+    private lazy var placeholderText: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "What shall we track?"
@@ -53,8 +48,8 @@ final class TrackersListViewController: UIViewController {
         label.isHidden = true
         return label
     }()
-    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
+    // MARK: - SetUpFunctions
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -68,89 +63,89 @@ final class TrackersListViewController: UIViewController {
         addSubviews()
         applyConstraints()
     }
-    
-    @objc
-    private func createTrackerButtonDidTap(){
-        let trackertypeChoiceVC = UINavigationController(rootViewController: TrackerTypeChoiceViewController())
-        present(trackertypeChoiceVC, animated: true)
-    }
     private func setUpNavBar(){
-        let image = UIImage(named: "AddTrackerButton")
-        let button = UIBarButtonItem(image: image,
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(Self.createTrackerButtonDidTap))
-        button.tintColor = UIColor(named: "YP Black")
-        self.navigationItem.leftBarButtonItem = button
-        self.navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: -12, bottom: 0, right: 0)
+        
+        self.navigationItem.searchController = searchController
+        self.navigationItem.searchController?.hidesNavigationBarDuringPresentation = false
+        self.navigationItem.searchController?.obscuresBackgroundDuringPresentation = false
+        
+        self.navigationItem.title = "Trackers"
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.largeTitleDisplayMode = .always
         
         let datePicker = UIDatePicker()
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         datePicker.locale = Locale(identifier: "fi")
         datePicker.clipsToBounds = true
         datePicker.calendar.firstWeekday = 2
-        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+        datePicker.addTarget(self,
+                             action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
-    }
-    private func setUpSearchBar(){
-        searchBar.delegate = self
+        
+        let image = UIImage(named: "AddTrackerButton")
+        let plusButton = UIBarButtonItem(image: image,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(Self.createTrackerButtonDidTap))
+        plusButton.tintColor = UIColor(named: "YP Black")
+        self.navigationItem.leftBarButtonItem = plusButton
+        self.navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: -12, bottom: 0, right: 0)
     }
     private func setUpCollectionView(){
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: "TrackerCell")
         collectionView.register(TrackerCellHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collectionView.contentInset = UIEdgeInsets(top: 24, left: 16, bottom: 24, right: 16)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
     }
-    private func setUpEmptyScreen(){
-        emptyPagePlaceholderImageView.isHidden = false
-        emptyPagePlaceholderText.isHidden = false
+    private func setUpEmptyScreen() {
+        placeholderImageView.isHidden = false
+        placeholderText.isHidden = false
     }
     private func addSubviews() {
-        view.addSubview(pageTitleLable)
-        view.addSubview(searchBar)
         view.addSubview(collectionView)
-        view.addSubview(emptyPagePlaceholderImageView)
-        view.addSubview(emptyPagePlaceholderText)
+        view.addSubview(placeholderImageView)
+        view.addSubview(placeholderText)
     }
     private func applyConstraints() {
         NSLayoutConstraint.activate([
+            placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            placeholderImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
-            pageTitleLable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            pageTitleLable.topAnchor.constraint(equalTo: view.topAnchor, constant: 88),
-            
-            searchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 8),
-            searchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -8),
-            searchBar.topAnchor.constraint(equalTo: pageTitleLable.bottomAnchor),
-            
-            emptyPagePlaceholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            emptyPagePlaceholderImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-            emptyPagePlaceholderText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            emptyPagePlaceholderText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            emptyPagePlaceholderText.topAnchor.constraint(equalTo: emptyPagePlaceholderImageView.bottomAnchor, constant: 8),
+            placeholderText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            placeholderText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            placeholderText.topAnchor.constraint(equalTo: placeholderImageView.bottomAnchor, constant: 8),
             
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: searchBar.bottomAnchor),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
         ])}
-    private func getCurrentDayNaumber(date: Date) -> Int {
-        let myCalendar = Calendar(identifier: .gregorian)
-        let weekDay = myCalendar.component(.weekday, from: date)
-        return weekDay
-    }
     
+    // MARK: - Selectors
+    @objc
+    private func createTrackerButtonDidTap(){
+        let trackertypeChoiceVC = UINavigationController(rootViewController: TrackerTypeChoiceViewController())
+        present(trackertypeChoiceVC, animated: true)
+    }
     @objc
     private func datePickerValueChanged(_ sender: UIDatePicker){
         let senderDate = sender.date
         let weekDay = getCurrentDayNaumber(date: senderDate)
         updateCurrentCategories(forDayOfTheWeek: weekDay)
+        currentDatePickerDateValue = senderDate
     }
     
-    private func updateCurrentCategories(forDayOfTheWeek dayNumber: Int){
+    // MARK: - SupportFunctions
+    private func getCurrentDayNaumber(date: Date) -> Int {
+        let weekDay = myCalendar.component(.weekday, from: date)
+        return weekDay
+    }
+    private func updateCurrentCategories(forDayOfTheWeek dayNumber: Int) {
         currentCategories = []
         allCategories.forEach { category in
             category.assignedTrackers.forEach { tracker in
@@ -162,7 +157,6 @@ final class TrackersListViewController: UIViewController {
         }
         collectionView.reloadData()
     }
-    
     private func addNewCategory(toList oldCategoriesList: [TrackerCategory],
                                 named categoryName: String,
                                 assignedTrackers trackers: [Tracker]?) -> [TrackerCategory] {
@@ -170,7 +164,7 @@ final class TrackersListViewController: UIViewController {
          If category already exists, then we don't need to create a new one. We have to check the list
          of trackers and update it(if it's empty). Otherwise, do nothing. It's important no to forget
          to do Batch Updates after creation of new categories list.
-         */
+        */
         var newTrackersList: [Tracker] = []
         oldCategoriesList.forEach { existingCategory in
             if existingCategory.title == categoryName {
@@ -196,23 +190,15 @@ final class TrackersListViewController: UIViewController {
             }
         }
         newCategoriesList.append(category)
-        
         return newCategoriesList
     }
-    
-    func printText(text: String) {
-        print("Editing began")
+    private func getRecordsForTracker(withId id: UInt) -> [TrackerRecord] {
+        completedTrackers.filter {$0.id == id}
     }
-}
-
-// MARK: - UISearchBarDelegatesdfdskljkl
-extension TrackersListViewController: UISearchBarDelegate {
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        printText(text: searchText) // no reaction!
-    }
-    
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        
+    private func isTrackerCompletedToday(withID id: UInt) -> Bool {
+        return getRecordsForTracker(withId: id).contains {
+            myCalendar.isDate($0.date, equalTo: currentDatePickerDateValue, toGranularity: .day)
+        }
     }
 }
 
@@ -281,20 +267,40 @@ extension TrackersListViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let section = indexPath.section
-        let row = indexPath.row
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrackerCell", for: indexPath) as! TrackerCell // TODO: change!!
         
-//        guard let categories = currentCategories else { return cell }
-        
         if currentCategories.isEmpty { return cell}
         
-        cell.setHabitDescriptionName(name: currentCategories[section].assignedTrackers[row].title)
-        cell.setHabitEmoji(emoji: currentCategories[section].assignedTrackers[row].emoji)
-        cell.setCellDescriptionViewBackgroundColor(color: currentCategories[section].assignedTrackers[row].color)
-        cell.setCompletionButtonTintColor(color: currentCategories[section].assignedTrackers[row].color)
+        let tracker: Tracker = currentCategories[indexPath.section].assignedTrackers[indexPath.row]
+        
+        cell.setUpTrackerCell(descriptionName: tracker.title,
+                              emoji: tracker.emoji,
+                              descriptionViewBackgroundColor: tracker.color,
+                              completionButtonTintColor: tracker.color,
+                              trackerID: tracker.id,
+                              counter: getRecordsForTracker(withId: tracker.id).count,
+                              completionFlag: isTrackerCompletedToday(withID: tracker.id))
+        
+        cell.delegate = self
         
         return cell
+    }
+}
+
+extension TrackersListViewController: TrackerCellDelegate {
+    func recordTrackerCompletionForSelectedDate(id: UInt) {
+        var newRecordList = completedTrackers
+        newRecordList.append(TrackerRecord(id: id, date: currentDatePickerDateValue))
+        completedTrackers = newRecordList
+    }
+    
+    func removeTrackerCompletionForSelectedDate(id: UInt) {
+        let newRecordList = completedTrackers.filter {
+            ($0.id != id) ||
+            ($0.id == id &&
+             !myCalendar.isDate($0.date, equalTo: currentDatePickerDateValue, toGranularity: .day))
+        }
+        completedTrackers = newRecordList
     }
 }

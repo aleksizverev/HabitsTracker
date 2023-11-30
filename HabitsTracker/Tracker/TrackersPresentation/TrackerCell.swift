@@ -1,8 +1,24 @@
 import UIKit
 
+protocol TrackerCellDelegate: AnyObject {
+    func recordTrackerCompletionForSelectedDate(id: UInt)
+    func removeTrackerCompletionForSelectedDate(id: UInt)
+}
+
 final class TrackerCell: UICollectionViewCell {
-    private var daysHabitCompletedCounter: Int = 0
-    private var habitCompletedToday: Bool = false
+    weak var delegate: TrackerCellDelegate?
+    
+    private var completionCounter: Int = 0 {
+        didSet {
+            updateHabitStatisticsLabelDays()
+        }
+    }
+    private var isCompletedToday: Bool = false {
+        didSet {
+            updateCompletionButtonState()
+        }
+    }
+    private var trackerId: UInt = 0
     private var cellDescriptionView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -21,7 +37,7 @@ final class TrackerCell: UICollectionViewCell {
         var paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineHeightMultiple = 1.26
         label.attributedText = NSMutableAttributedString(string: "Default text", attributes: [NSAttributedString.Key.paragraphStyle: paragraphStyle])
-
+        
         return label
     }()
     private var emojiLabel: UILabel = {
@@ -39,7 +55,7 @@ final class TrackerCell: UICollectionViewCell {
         return label
     }()
     private var completionButton: UIButton = {
-        let image = UIImage(named: "CompletionButton") ?? UIImage(systemName: "plus")
+        let image = UIImage(systemName: "plus")
         let button = UIButton.systemButton(
             with: image!,
             target: self,
@@ -59,43 +75,16 @@ final class TrackerCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setHabitDescriptionName(name: String) {
-        habitDescriptionLabel.text = name
-    }
-    func setHabitEmoji(emoji: String) {
-        emojiLabel.text = emoji
-    }
-    func setCellDescriptionViewBackgroundColor(color: UIColor) {
-        cellDescriptionView.backgroundColor = color
-    }
-    func setCompletionButtonTintColor(color: UIColor){
-        completionButton.tintColor = color
-    }
-    func setHabitStatisticsLabelDays(days: Int) {
-        statisticsLabel.text = daysHabitCompletedCounter == 1
-        ? String(daysHabitCompletedCounter) + " day"
-        : String(daysHabitCompletedCounter) + " days"
-    }
-    
     @objc
     private func completionButtonDidTap() {
-        if !habitCompletedToday {
-            daysHabitCompletedCounter += 1
-            habitCompletedToday = true
+        if !isCompletedToday {
+            completionCounter += 1
+            isCompletedToday = true
+            delegate?.recordTrackerCompletionForSelectedDate(id: trackerId)
         } else {
-            daysHabitCompletedCounter -= 1
-            habitCompletedToday = false
-        }
-        setHabitStatisticsLabelDays(days: daysHabitCompletedCounter)
-        changeCompletionButtonState()
-    }
-    private func changeCompletionButtonState() {
-        if !habitCompletedToday {
-            completionButton.setImage(UIImage(named: "CompletionButton"), for: .normal)
-            completionButton.alpha = 1
-        } else {
-            completionButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
-            completionButton.alpha = 0.3
+            completionCounter -= 1
+            isCompletedToday = false
+            delegate?.removeTrackerCompletionForSelectedDate(id: trackerId)
         }
     }
     private func addSubviews() {
@@ -121,13 +110,43 @@ final class TrackerCell: UICollectionViewCell {
             habitDescriptionLabel.trailingAnchor.constraint(equalTo: cellDescriptionView.trailingAnchor, constant: -12),
             habitDescriptionLabel.topAnchor.constraint(greaterThanOrEqualTo: emojiLabel.bottomAnchor, constant: 8),
             habitDescriptionLabel.bottomAnchor.constraint(equalTo: cellDescriptionView.bottomAnchor, constant: -12),
-        
+            
             
             statisticsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             statisticsLabel.topAnchor.constraint(equalTo: cellDescriptionView.bottomAnchor, constant: 16),
-
+            
             completionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
             completionButton.centerYAnchor.constraint(equalTo: statisticsLabel.centerYAnchor),
         ])
+    }
+    private func updateHabitStatisticsLabelDays(){
+        statisticsLabel.text = completionCounter == 1
+        ? String(completionCounter) + " day"
+        : String(completionCounter) + " days"
+    }
+    private func updateCompletionButtonState() {
+        if isCompletedToday {
+            completionButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
+            completionButton.alpha = 1
+        } else {
+            completionButton.setImage(UIImage(systemName: "plus"), for: .normal)
+            completionButton.alpha = 0.3
+        }
+    }
+    
+    func setUpTrackerCell(descriptionName: String,
+                          emoji: String,
+                          descriptionViewBackgroundColor: UIColor,
+                          completionButtonTintColor: UIColor,
+                          trackerID: UInt,
+                          counter: Int,
+                          completionFlag: Bool) {
+        habitDescriptionLabel.text = descriptionName
+        emojiLabel.text = emoji
+        cellDescriptionView.backgroundColor = descriptionViewBackgroundColor
+        completionButton.tintColor = completionButtonTintColor
+        completionCounter = counter
+        trackerId = trackerID
+        isCompletedToday = completionFlag
     }
 }
