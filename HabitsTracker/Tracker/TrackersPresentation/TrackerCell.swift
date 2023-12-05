@@ -18,6 +18,7 @@ final class TrackerCell: UICollectionViewCell {
             updateCompletionButtonState()
         }
     }
+    private var isAllowedToBeCompletedToday: Bool = false
     private var trackerId: UInt = 0
     private var cellDescriptionView: UIView = {
         let view = UIView()
@@ -77,6 +78,8 @@ final class TrackerCell: UICollectionViewCell {
     
     @objc
     private func completionButtonDidTap() {
+        if !isAllowedToBeCompletedToday { return }
+
         if !isCompletedToday {
             completionCounter += 1
             isCompletedToday = true
@@ -140,7 +143,8 @@ final class TrackerCell: UICollectionViewCell {
                           completionButtonTintColor: UIColor,
                           trackerID: UInt,
                           counter: Int,
-                          completionFlag: Bool) {
+                          completionFlag: Bool,
+                          isCompletionAlowed: Bool) {
         habitDescriptionLabel.text = descriptionName
         emojiLabel.text = emoji
         cellDescriptionView.backgroundColor = descriptionViewBackgroundColor
@@ -148,5 +152,6 @@ final class TrackerCell: UICollectionViewCell {
         completionCounter = counter
         trackerId = trackerID
         isCompletedToday = completionFlag
+        isAllowedToBeCompletedToday = isCompletionAlowed
     }
 }

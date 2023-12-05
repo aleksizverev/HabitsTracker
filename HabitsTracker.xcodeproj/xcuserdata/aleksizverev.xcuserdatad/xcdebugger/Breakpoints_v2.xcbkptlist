@@ -20,53 +20,5 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F2977FB2-9393-4EF7-A212-59DB03B3E254"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "148"
-            endingLineNumber = "148"
-            landmarkName = "TrackersListViewController"
-            landmarkType = "3">
-            <Locations>
-               <Location
-                  uuid = "F2977FB2-9393-4EF7-A212-59DB03B3E254 - 46220060e71c3a0e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (HabitsTracker.TrackerCategory) -&gt; () in HabitsTracker.TrackersListViewController.updateCurrentCategories(forDayOfTheWeek: Swift.Int) -&gt; ()"
-                  moduleName = "HabitsTracker"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "155"
-                  endingLineNumber = "155"
-                  offsetFromSymbolStart = "252">
-               </Location>
-               <Location
-                  uuid = "F2977FB2-9393-4EF7-A212-59DB03B3E254 - 597e82a06d0359ea"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "HabitsTracker.TrackersListViewController.updateCurrentCategories(forDayOfTheWeek: Swift.Int) -&gt; ()"
-                  moduleName = "HabitsTracker"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "156"
-                  endingLineNumber = "156"
-                  offsetFromSymbolStart = "68">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
    </Breakpoints>
 </Bucket>
