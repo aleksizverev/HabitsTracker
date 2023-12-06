@@ -137,7 +137,7 @@ final class TrackerCell: UICollectionViewCell {
         }
     }
     
-    func setUpTrackerCell(descriptionName: String,
+    func setupTrackerCell(descriptionName: String,
                           emoji: String,
                           descriptionViewBackgroundColor: UIColor,
                           completionButtonTintColor: UIColor,

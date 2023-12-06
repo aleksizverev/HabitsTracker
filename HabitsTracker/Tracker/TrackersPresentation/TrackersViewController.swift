@@ -68,7 +68,7 @@ final class TrackersListViewController: UIViewController {
         return label
     }()
     
-    // MARK: - SetUpFunctions
+    // MARK: - SetupFunctions
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = .white
@@ -170,7 +170,7 @@ final class TrackersListViewController: UIViewController {
         updateVisibleCategories()
     }
     
-    // MARK: - SupportFunctions
+    // MARK: - LogicFunctions
     private func updateVisibleCategories(forDayOfTheWeek dayNumber: Int) {
         currentCategories = []
         allCategories.forEach { category in
@@ -243,7 +243,12 @@ final class TrackersListViewController: UIViewController {
         completedTrackers.filter {$0.id == id}
     }
     private func getCurrentDayNaumber(date: Date) -> Int {
-        let weekDay = myCalendar.component(.weekday, from: date)
+        var weekDay = myCalendar.component(.weekday, from: date)
+        weekDay -= 1
+        
+        if weekDay == 0 {
+            weekDay = 7
+        }
         return weekDay
     }
     private func isTrackerCompletedToday(withID id: UInt) -> Bool {
@@ -339,7 +344,7 @@ extension TrackersListViewController: UICollectionViewDataSource {
         
         let tracker: Tracker = currentCategories[indexPath.section].assignedTrackers[indexPath.row]
         
-        cell.setUpTrackerCell(descriptionName: tracker.title,
+        cell.setupTrackerCell(descriptionName: tracker.title,
                               emoji: tracker.emoji,
                               descriptionViewBackgroundColor: tracker.color,
                               completionButtonTintColor: tracker.color,

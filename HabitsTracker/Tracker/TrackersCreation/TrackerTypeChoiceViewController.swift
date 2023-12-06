@@ -16,7 +16,7 @@ final class TrackerTypeChoiceViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.backgroundColor = UIColor(named: "YP Black")
         
-        button.addTarget(self, action: #selector(Self.habitCreationButtonDidTap), for: .touchUpInside)
+        button.addTarget(self, action: #selector(Self.didTapHabitCreationButton), for: .touchUpInside)
         
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -43,20 +43,16 @@ final class TrackerTypeChoiceViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
-        setUpNavBar()
+        navigationItem.title = "Tracker creation"
         
         addSubviews()
         applyConstraints()
     }
     
     @objc
-    private func habitCreationButtonDidTap(){
+    private func didTapHabitCreationButton(){
         let trackerCreationVC = UINavigationController(rootViewController: TrackerCreationViewController())
         present(trackerCreationVC, animated: true)
-    }
-    private func setUpNavBar(){
-        self.navigationItem.title = "Tracker creation"
     }
     private func addSubviews() {
         view.addSubview(stackView)
