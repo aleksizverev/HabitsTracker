@@ -3,7 +3,7 @@ import UIKit
 final class TrackersListViewController: UIViewController {
     
     // MARK: - LogicVariables
-    private var allCategories: [TrackerCategory] = [
+   /* private var allCategories: [TrackerCategory] = [
         TrackerCategory(
             title: "Household",
             assignedTrackers: [
@@ -32,11 +32,14 @@ final class TrackersListViewController: UIViewController {
         Tracker(id: 4, title: "Dates in April", color: .blue, emoji: "❤️",                      schedule: [2, 4, 5, 7]),
         Tracker(id: 5, title: "Read some books", color: .brown, emoji: "📙", schedule: [1, 2, 3, 4, 5])
     ]
+    */
+    
+    let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
+
+    private var allCategories: [TrackerCategory] = []
+    private var allTrackers = [UUID: Tracker]()
     private var currentCategories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord] = [
-        TrackerRecord(id: 1, date: Date()),
-        TrackerRecord(id: 3, date: Date())
-    ]
+    private var completedTrackers: [TrackerRecord] = []
     private var currentDatePickerDateValue: Date = Date()
     private let myCalendar = Calendar(identifier: .gregorian)
     
@@ -71,6 +74,12 @@ final class TrackersListViewController: UIViewController {
     // MARK: - SetupFunctions
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleNotification(_:)),
+                                               name: NSNotification.Name("CategoriesUpdateNotification"),
+                                               object: nil)
+        
         self.view.backgroundColor = .white
         
         setUpNavBar()
@@ -82,6 +91,7 @@ final class TrackersListViewController: UIViewController {
         addSubviews()
         applyConstraints()
     }
+    
     private func setUpNavBar(){
         
         self.navigationItem.searchController = searchController
@@ -169,9 +179,24 @@ final class TrackersListViewController: UIViewController {
         currentDatePickerDateValue = senderDate
         updateVisibleCategories()
     }
+    @objc
+    func handleNotification(_ notification: Notification) {
+        if let userData = notification.userInfo,
+           let tracker = userData["Tracker"] as? Tracker {
+            
+            let newCategories = addNewCategory(toList: allCategories,
+                                               named: "Important",
+                                               assignedTrackers: [tracker])
+
+            allTrackers[tracker.id] = tracker
+            allCategories = newCategories
+            updateVisibleCategories()
+        }
+    }
     
     // MARK: - LogicFunctions
     private func updateVisibleCategories(forDayOfTheWeek dayNumber: Int) {
+        print(allCategories)
         currentCategories = []
         allCategories.forEach { category in
             category.assignedTrackers.forEach { tracker in
@@ -180,6 +205,7 @@ final class TrackersListViewController: UIViewController {
                 }
             }
         }
+        print("DEBUG PRINT! Current categories: ", currentCategories)
         collectionView.reloadData()
     }
     private func updateVisibleCategories() {
@@ -187,8 +213,7 @@ final class TrackersListViewController: UIViewController {
             let searchQuery = searchController.searchBar.text?.lowercased(),
             !searchQuery.isEmpty
         else {
-            updateVisibleCategories(
-                forDayOfTheWeek: getCurrentDayNaumber(date: currentDatePickerDateValue))
+            updateVisibleCategories(forDayOfTheWeek: getCurrentDayNaumber(date: currentDatePickerDateValue))
             return
         }
         
@@ -239,7 +264,7 @@ final class TrackersListViewController: UIViewController {
         newCategoriesList.append(category)
         return newCategoriesList
     }
-    private func getRecordsForTracker(withId id: UInt) -> [TrackerRecord] {
+    private func getRecordsForTracker(withId id: UUID) -> [TrackerRecord] {
         completedTrackers.filter {$0.id == id}
     }
     private func getCurrentDayNaumber(date: Date) -> Int {
@@ -251,21 +276,61 @@ final class TrackersListViewController: UIViewController {
         }
         return weekDay
     }
-    private func isTrackerCompletedToday(withID id: UInt) -> Bool {
+    private func isTrackerCompletedToday(withID id: UUID) -> Bool {
         getRecordsForTracker(withId: id).contains {
             myCalendar.isDate($0.date, equalTo: currentDatePickerDateValue, toGranularity: .day)
         }
     }
-    private func isTrackerSetForCurrentDatePickerValue(withID id: UInt) -> Bool {
-        let tracker = allTrackers.filter {$0.id == id}
-        
-        if !tracker.isEmpty {
-            return tracker[0].schedule.contains(getCurrentDayNaumber(date: currentDatePickerDateValue))
+    private func isTrackerSetForCurrentDatePickerValue(withID id: UUID) -> Bool {
+        if let tracker = allTrackers[id],
+           tracker.schedule.contains(getCurrentDayNaumber(date: currentDatePickerDateValue)) {
+            
+            print("DEBUG PRINT! Tracker found")
+            return true
         }
         return false
+        /*,
+        let tracker = allTrackers.filter {$0.id == id}  // remains empty here!!
+        
+        if !tracker.isEmpty {
+            return tracker.schedule.contains(getCurrentDayNaumber(date: currentDatePickerDateValue))
+        }
+        return false
+        */
     }
     private func isAllowedToBeCompletedToday() -> Bool {
         Date() >= currentDatePickerDateValue
+    }
+    
+    func createTracker(title: String, categoryTitle: String, schedule: [Int]) {
+        let tracker = Tracker(id: UUID(),
+                              title: title,
+                              color: randomColor(),
+                              emoji: emojis[Int.random(in: 0...emojis.count)],
+                              schedule: schedule)
+        
+        let newCategories = addNewCategory(toList: allCategories,
+                                           named: categoryTitle,
+                                           assignedTrackers: [tracker])
+        
+        allTrackers[tracker.id] = tracker
+        allCategories = newCategories
+        print("DEBUG PRINT! All categories: ", allCategories)
+    
+        NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"), object: nil)
+//        updateVisibleCategories()
+    }
+    
+    // MARK: - Temporary functions
+    private func randomColor() -> UIColor {
+        // Generate random values for red, green, and blue components
+        let red = CGFloat.random(in: 0...1)
+        let green = CGFloat.random(in: 0...1)
+        let blue = CGFloat.random(in: 0...1)
+        
+        // Create a new UIColor with the random components
+        let color = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+        return color
     }
 }
 
@@ -320,7 +385,7 @@ extension TrackersListViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if currentCategories.isEmpty {
             showEmptyScreen()
-            return 0
+            return 1
         }
         hideEmptyScreen()
         return currentCategories.count
@@ -361,12 +426,12 @@ extension TrackersListViewController: UICollectionViewDataSource {
 
 // MARK: - TrackerCellDelegate
 extension TrackersListViewController: TrackerCellDelegate {
-    func recordTrackerCompletionForSelectedDate(id: UInt) {
+    func recordTrackerCompletionForSelectedDate(id: UUID) {
         var newRecordList = completedTrackers
         newRecordList.append(TrackerRecord(id: id, date: currentDatePickerDateValue))
         completedTrackers = newRecordList
     }
-    func removeTrackerCompletionForSelectedDate(id: UInt) {
+    func removeTrackerCompletionForSelectedDate(id: UUID) {
         let newRecordList = completedTrackers.filter {
             ($0.id != id) ||
             ($0.id == id &&

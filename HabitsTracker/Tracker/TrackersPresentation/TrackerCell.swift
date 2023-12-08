@@ -1,8 +1,8 @@
 import UIKit
 
 protocol TrackerCellDelegate: AnyObject {
-    func recordTrackerCompletionForSelectedDate(id: UInt)
-    func removeTrackerCompletionForSelectedDate(id: UInt)
+    func recordTrackerCompletionForSelectedDate(id: UUID)
+    func removeTrackerCompletionForSelectedDate(id: UUID)
 }
 
 final class TrackerCell: UICollectionViewCell {
@@ -19,7 +19,7 @@ final class TrackerCell: UICollectionViewCell {
         }
     }
     private var isAllowedToBeCompletedToday: Bool = false
-    private var trackerId: UInt = 0
+    private var trackerId: UUID = UUID()
     private var cellDescriptionView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -141,7 +141,7 @@ final class TrackerCell: UICollectionViewCell {
                           emoji: String,
                           descriptionViewBackgroundColor: UIColor,
                           completionButtonTintColor: UIColor,
-                          trackerID: UInt,
+                          trackerID: UUID,
                           counter: Int,
                           completionFlag: Bool,
                           isCompletionAlowed: Bool) {

@@ -1,63 +1,7 @@
 import UIKit
 
 final class TrackerCreationViewController: UIViewController, TrackerScheduleViewControllerDelegate {
-    /*
-     private var trackerPropertiesStackView: UIStackView = {
-     let stack = UIStackView()
-     stack.translatesAutoresizingMaskIntoConstraints = false
-     stack.axis = .vertical
-     stack.distribution = .fillProportionally
-     stack.spacing = 0
-     stack.layer.cornerRadius = 16
-     stack.layer.masksToBounds = true
-     return stack
-     }()
-     private var categoryButton: UIButton = {
-     let button = UIButton()
-     button.translatesAutoresizingMaskIntoConstraints = false
-     button.setTitle("Category", for: .normal)
-     button.setTitleColor(UIColor(named: "YP Black"), for: .normal)
-     button.contentHorizontalAlignment = .leading
-     button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
-     button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
-     button.backgroundColor = UIColor(named: "YP Background")
-     return button
-     }()
-     private var scheduleButton: UIButton = {
-     let button = UIButton()
-     button.translatesAutoresizingMaskIntoConstraints = false
-     button.setTitle("Schedule", for: .normal)
-     button.setTitleColor(UIColor(named: "YP Black"), for: .normal)
-     button.contentHorizontalAlignment = .leading
-     button.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
-     button.titleLabel?.font = .systemFont(ofSize: 17, weight: .regular)
-     button.tintColor = UIColor(named: "YP Black")
-     button.backgroundColor = UIColor(named: "YP Background")
-     button.addTarget(self, action: #selector(Self.didTapScheduleButton), for: .touchUpInside)
-     return button
-     }()
-     private var separator: UIView = {
-     let view = UIView()
-     view.translatesAutoresizingMaskIntoConstraints = false
-     view.backgroundColor = UIColor(named: "YP Gray")
-     view.heightAnchor.constraint(equalToConstant: 1).isActive = true
-     return view
-     }()
-     private var listItem1: UIImageView = {
-     let image = UIImage(named: "ListItem")
-     let imageView = UIImageView(image: image)
-     imageView.translatesAutoresizingMaskIntoConstraints = false
-     return imageView
-     }()
-     private var listItem2: UIImageView = {
-     let image = UIImage(named: "ListItem")
-     let imageView = UIImageView(image: image)
-     imageView.translatesAutoresizingMaskIntoConstraints = false
-     return imageView
-     }()
-     */
-    
-    private var trackerSchedule: [Int] = []
+    let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
     private var weekdaysNames = [
         1: "Mon",
         2: "Tue",
@@ -67,6 +11,20 @@ final class TrackerCreationViewController: UIViewController, TrackerScheduleView
         6: "Sat",
         7: "Sun",
     ]
+    
+    private var tableViewCellTitleData: [String] = ["Category", "Schedule"]
+    private var tableViewCellSubTitleData: String = ""
+    private var trackerSchedule: [Int] = [] {
+        didSet {
+            setupCreationButtonColor()
+        }
+    }
+    private var trackerTitle: String? {
+        didSet {
+            setupCreationButtonColor()
+            
+        }
+    }
     
     private var trackerTitleField: UITextField = {
         let textField = UITextField()
@@ -84,9 +42,10 @@ final class TrackerCreationViewController: UIViewController, TrackerScheduleView
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.addTarget(self, action: #selector(Self.didTypeText), for: .editingChanged)
+        
         return textField
     }()
-    
     private var trackerCreationButtonsStack: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +54,6 @@ final class TrackerCreationViewController: UIViewController, TrackerScheduleView
         stackView.spacing = 8
         return stackView
     }()
-    
     private var cancelButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -110,7 +68,6 @@ final class TrackerCreationViewController: UIViewController, TrackerScheduleView
         button.addTarget(self, action: #selector(Self.didTapCancelButton), for: .touchUpInside)
         return button
     }()
-    
     private var creationButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -120,11 +77,10 @@ final class TrackerCreationViewController: UIViewController, TrackerScheduleView
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.backgroundColor = UIColor(named: "YP Gray")
+        button.isEnabled = false
+        button.addTarget(self, action: #selector(Self.didTapCreationButton), for: .touchUpInside)
         return button
     }()
-    
-    private var tableViewCellTitleData: [String] = ["Category", "Schedule"]
-    private var tableViewCellSubTitleData: String = ""
     private var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -147,21 +103,59 @@ final class TrackerCreationViewController: UIViewController, TrackerScheduleView
         tableView.dataSource = self
         tableView.delegate = self
         
+        trackerTitleField.delegate = self
+        
         addSubviews()
         applyConstraints()
     }
     
     // MARK: - Selectors
     @objc
-    private func didTapCancelButton(){
+    private func didTapCancelButton() {
         self.dismiss(animated: true)
     }
     @objc
-    private func didTapScheduleButton(){
+    private func didTapScheduleButton() {
+        view.endEditing(true)
+        
         let trackerScheduleVC = TrackerScheduleViewController()
         trackerScheduleVC.delegate = self
         trackerScheduleVC.chosenSchedule = Set<Int>(trackerSchedule)
         present(UINavigationController(rootViewController: trackerScheduleVC), animated: true)
+    }
+    @objc
+    private func didTypeText(sender: UITextField) {
+        guard let title = sender.text else { return }
+        trackerTitle = title
+    }
+    @objc
+    private func didTapCreationButton(){
+        guard let trackerTitle = trackerTitle else { return }
+        if trackerSchedule.isEmpty {
+            print("EMPTY SCHEDULE") // Debug print, to be removed in further sprints
+        }
+        
+        let tracker = Tracker(id: UUID(),
+                              title: trackerTitle,
+                              color: randomColor(),
+                              emoji: emojis[Int.random(in: 0..<emojis.count)],
+                              schedule: trackerSchedule)
+        
+        NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"),
+                                        object: nil,
+                                        userInfo: ["Tracker": tracker])
+        
+        self.dismiss(animated: true)
+    }
+    
+    // temporary solution
+    func randomColor() -> UIColor {
+        let red = CGFloat.random(in: 0...1)
+        let green = CGFloat.random(in: 0...1)
+        let blue = CGFloat.random(in: 0...1)
+        
+        let color = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+        return color
     }
     
     // MARK: - SetupFunctions
@@ -172,16 +166,6 @@ final class TrackerCreationViewController: UIViewController, TrackerScheduleView
         
         trackerCreationButtonsStack.addArrangedSubview(cancelButton)
         trackerCreationButtonsStack.addArrangedSubview(creationButton)
-        
-        /*
-         view.addSubview(trackerPropertiesStackView)
-         trackerPropertiesStackView.addArrangedSubview(categoryButton)
-         trackerPropertiesStackView.addArrangedSubview(scheduleButton)
-         
-         categoryButton.addSubview(separator)
-         categoryButton.addSubview(listItem1)
-         scheduleButton.addSubview(listItem2)
-         */
     }
     private func applyConstraints() {
         NSLayoutConstraint.activate([
@@ -195,33 +179,25 @@ final class TrackerCreationViewController: UIViewController, TrackerScheduleView
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.heightAnchor.constraint(equalToConstant: 149),
             
-            /*
-             trackerPropertiesStackView.topAnchor.constraint(equalTo: trackerTitleField.bottomAnchor, constant: 24),
-             trackerPropertiesStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-             trackerPropertiesStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-             trackerPropertiesStackView.heightAnchor.constraint(equalToConstant: 150),
-             
-             categoryButton.leadingAnchor.constraint(equalTo: trackerPropertiesStackView.leadingAnchor),
-             categoryButton.trailingAnchor.constraint(equalTo: trackerPropertiesStackView.trailingAnchor),
-             scheduleButton.leadingAnchor.constraint(equalTo: trackerPropertiesStackView.leadingAnchor),
-             scheduleButton.trailingAnchor.constraint(equalTo: trackerPropertiesStackView.trailingAnchor),
-             
-             separator.widthAnchor.constraint(equalTo: trackerPropertiesStackView.widthAnchor, multiplier: 0.9),
-             separator.bottomAnchor.constraint(equalTo: categoryButton.bottomAnchor),
-             separator.centerXAnchor.constraint(equalTo: categoryButton.centerXAnchor),
-             
-             listItem1.trailingAnchor.constraint(equalTo: categoryButton.trailingAnchor, constant: -16),
-             listItem1.centerYAnchor.constraint(equalTo: categoryButton.centerYAnchor),
-             listItem2.trailingAnchor.constraint(equalTo: scheduleButton.trailingAnchor, constant: -16),
-             listItem2.centerYAnchor.constraint(equalTo: scheduleButton.centerYAnchor),
-             */
-            
             trackerCreationButtonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             trackerCreationButtonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             trackerCreationButtonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             trackerCreationButtonsStack.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
+    
+    // MARK: - LogicFunctions
+    private func setupCreationButtonColor() {
+        if let trackerTitle = trackerTitle,
+           !trackerTitle.isEmpty && !trackerSchedule.isEmpty {
+            creationButton.backgroundColor = UIColor(named: "YP Black")
+            creationButton.isEnabled = true
+            return
+        }
+        creationButton.backgroundColor = UIColor(named: "YP Gray")
+        creationButton.isEnabled = false
+    }
+    
     
     // MARK: - TrackerScheduleViewControllerDelegate
     func addSchedule(schedule: [Int]) {
@@ -237,6 +213,13 @@ final class TrackerCreationViewController: UIViewController, TrackerScheduleView
             tableViewCellSubTitleData = String(tableViewCellSubTitleData.dropLast(2))
         }
         tableView.reloadData()
+    }
+}
+
+extension TrackerCreationViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 
