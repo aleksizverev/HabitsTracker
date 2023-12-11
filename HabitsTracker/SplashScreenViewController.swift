@@ -1,6 +1,6 @@
 import UIKit
 
-class SplashScreenViewController: UIViewController {
+final class SplashScreenViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()

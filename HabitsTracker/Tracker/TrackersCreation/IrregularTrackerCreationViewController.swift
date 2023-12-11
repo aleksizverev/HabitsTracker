@@ -1,10 +1,10 @@
 import UIKit
 
 final class IrregularTrackerCreationViewController: UIViewController {
-    let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
+    private let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
     
     private var tableViewCellTitleData: [String] = ["Category"]
-    private var trackerSchedule: [Int] = [1, 2, 3, 4, 5, 6, 7]
+    private var trackerSchedule: [Int] = Array(1...7)
     private var trackerTitle: String? {
         didSet {
             setupCreationButtonColor()
@@ -16,7 +16,7 @@ final class IrregularTrackerCreationViewController: UIViewController {
         }
     }
     
-    private var trackerTitleField: UITextField = {
+    private lazy var trackerTitleField: UITextField = {
         let textField = UITextField()
         textField.setLeftPaddingPoints(16)
         textField.setRightPaddingPoints(16)
@@ -32,11 +32,11 @@ final class IrregularTrackerCreationViewController: UIViewController {
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.addTarget(self, action: #selector(Self.didTypeText), for: .editingChanged)
+        textField.addTarget(self, action: #selector(didTypeText), for: .editingChanged)
         
         return textField
     }()
-    private var trackerCreationButtonsStack: UIStackView = {
+    private let trackerCreationButtonsStack: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
@@ -44,7 +44,7 @@ final class IrregularTrackerCreationViewController: UIViewController {
         stackView.spacing = 8
         return stackView
     }()
-    private var cancelButton: UIButton = {
+    private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Cancel", for: .normal)
@@ -55,10 +55,10 @@ final class IrregularTrackerCreationViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.backgroundColor = .white
-        button.addTarget(self, action: #selector(Self.didTapCancelButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         return button
     }()
-    private var creationButton: UIButton = {
+    private lazy var creationButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Create", for: .normal)
@@ -68,10 +68,10 @@ final class IrregularTrackerCreationViewController: UIViewController {
         button.layer.masksToBounds = true
         button.backgroundColor = UIColor(named: "YP Gray")
         button.isEnabled = false
-        button.addTarget(self, action: #selector(Self.didTapCreationButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapCreationButton), for: .touchUpInside)
         return button
     }()
-    private var tableView: UITableView = {
+    private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = UIColor(named: "YP Background")
@@ -114,8 +114,8 @@ final class IrregularTrackerCreationViewController: UIViewController {
         
         let tracker = Tracker(id: UUID(),
                               title: trackerTitle,
-                              color: randomColor(),
-                              emoji: emojis[Int.random(in: 0..<emojis.count)],
+                              color: UIColor().randomColor(),
+                              emoji: emojis.randomElement() ?? "😎",
                               schedule: trackerSchedule)
         
         NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"),
@@ -129,18 +129,8 @@ final class IrregularTrackerCreationViewController: UIViewController {
         view.endEditing(true)
         let trackerCategoryVC = TrackerCategoryViewController()
         trackerCategoryVC.delegate = self
-        trackerCategoryVC.chosenCategory = trackerCategory
+        trackerCategoryVC.setChosenCategory(category: trackerCategory)
         present(UINavigationController(rootViewController: trackerCategoryVC), animated: true)
-    }
-    
-    // temporary solution
-    func randomColor() -> UIColor {
-        let red = CGFloat.random(in: 0...1)
-        let green = CGFloat.random(in: 0...1)
-        let blue = CGFloat.random(in: 0...1)
-        
-        let color = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
-        return color
     }
     
     // MARK: - SetupFunctions
@@ -157,17 +147,17 @@ final class IrregularTrackerCreationViewController: UIViewController {
             trackerTitleField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             trackerTitleField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             trackerTitleField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            trackerTitleField.heightAnchor.constraint(equalToConstant: 75),
+            trackerTitleField.heightAnchor.constraint(equalToConstant: Constants.defaultCellHeight),
             
             tableView.topAnchor.constraint(equalTo: trackerTitleField.bottomAnchor, constant: 24),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.heightAnchor.constraint(equalToConstant: 74),
+            tableView.heightAnchor.constraint(equalToConstant: Constants.defaultTableViewHeight),
             
             trackerCreationButtonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             trackerCreationButtonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             trackerCreationButtonsStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            trackerCreationButtonsStack.heightAnchor.constraint(equalToConstant: 60)
+            trackerCreationButtonsStack.heightAnchor.constraint(equalToConstant: Constants.defaultButtonStackHeight)
         ])
     }
     
@@ -238,3 +228,10 @@ extension IrregularTrackerCreationViewController: TrackerCategoryViewControllerD
     }
 }
 
+extension IrregularTrackerCreationViewController {
+    private enum Constants {
+        static let defaultCellHeight: CGFloat = 75
+        static let defaultTableViewHeight: CGFloat = 74
+        static let defaultButtonStackHeight: CGFloat = 60
+    }
+}

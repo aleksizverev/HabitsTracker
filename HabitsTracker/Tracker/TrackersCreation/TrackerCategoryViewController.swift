@@ -8,7 +8,7 @@ final class TrackerCategoryViewController: UIViewController {
     weak var delegate: TrackerCategoryViewControllerDelegate?
     
     private var availableCategories: [String] = ["Important", "Not so important"]
-    var chosenCategory: String?
+    private var chosenCategory: String?
     
     private var tableView: UITableView = {
         let tableView = UITableView()
@@ -70,6 +70,10 @@ final class TrackerCategoryViewController: UIViewController {
             doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             doneButton.heightAnchor.constraint(equalToConstant: 60),
         ])
+    }
+    
+    func setChosenCategory(category: String?) {
+        chosenCategory = category
     }
 }
 
