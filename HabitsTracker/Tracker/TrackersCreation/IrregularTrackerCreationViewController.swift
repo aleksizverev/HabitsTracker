@@ -1,24 +1,10 @@
 import UIKit
 
-final class TrackerCreationViewController: UIViewController {
+final class IrregularTrackerCreationViewController: UIViewController {
     let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
-    private var weekdaysNames = [
-        1: "Mon",
-        2: "Tue",
-        3: "Wed",
-        4: "Thu",
-        5: "Fri",
-        6: "Sat",
-        7: "Sun",
-    ]
     
-    private var tableViewCellTitleData: [String] = ["Category", "Schedule"]
-    private var tableViewCellScheduleSubTitleData: String = ""
-    private var trackerSchedule: [Int] = [] {
-        didSet {
-            setupCreationButtonColor()
-        }
-    }
+    private var tableViewCellTitleData: [String] = ["Category"]
+    private var trackerSchedule: [Int] = [1, 2, 3, 4, 5, 6, 7]
     private var trackerTitle: String? {
         didSet {
             setupCreationButtonColor()
@@ -139,14 +125,6 @@ final class TrackerCreationViewController: UIViewController {
         
         self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
-    private func didTapScheduleButton() {
-        view.endEditing(true)
-        
-        let trackerScheduleVC = TrackerScheduleViewController()
-        trackerScheduleVC.delegate = self
-        trackerScheduleVC.chosenSchedule = Set<Int>(trackerSchedule)
-        present(UINavigationController(rootViewController: trackerScheduleVC), animated: true)
-    }
     private func didTapCategoryButton() {
         view.endEditing(true)
         let trackerCategoryVC = TrackerCategoryViewController()
@@ -184,7 +162,7 @@ final class TrackerCreationViewController: UIViewController {
             tableView.topAnchor.constraint(equalTo: trackerTitleField.bottomAnchor, constant: 24),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            tableView.heightAnchor.constraint(equalToConstant: 149),
+            tableView.heightAnchor.constraint(equalToConstant: 74),
             
             trackerCreationButtonsStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             trackerCreationButtonsStack.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -197,7 +175,7 @@ final class TrackerCreationViewController: UIViewController {
     private func setupCreationButtonColor() {
         if let trackerTitle = trackerTitle,
            let trackerCategory = trackerCategory,
-           !trackerTitle.isEmpty && !trackerSchedule.isEmpty && !trackerCategory.isEmpty {
+           !trackerTitle.isEmpty && !trackerCategory.isEmpty {
             creationButton.backgroundColor = UIColor(named: "YP Black")
             creationButton.isEnabled = true
             return
@@ -207,14 +185,14 @@ final class TrackerCreationViewController: UIViewController {
     }
 }
 
-extension TrackerCreationViewController: UITextFieldDelegate {
+extension IrregularTrackerCreationViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
     }
 }
 
-extension TrackerCreationViewController: UITableViewDataSource {
+extension IrregularTrackerCreationViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         tableViewCellTitleData.count
     }
@@ -233,13 +211,6 @@ extension TrackerCreationViewController: UITableViewDataSource {
             cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
         }
         
-        if indexPath.row == 1 {
-            cell.detailTextLabel?.text = tableViewCellScheduleSubTitleData
-            cell.detailTextLabel?.textColor = UIColor(named: "YP Gray")
-            cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 17)
-        }
-        
-        
         let listItem = UIImageView(image: UIImage(named: "ListItem"))
         listItem.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
         cell.accessoryView = listItem
@@ -248,13 +219,11 @@ extension TrackerCreationViewController: UITableViewDataSource {
     }
 }
 
-extension TrackerCreationViewController: UITableViewDelegate {
+extension IrregularTrackerCreationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch indexPath.row {
         case 0:
             didTapCategoryButton()
-        case 1:
-            didTapScheduleButton()
         default:
             return
         }
@@ -262,27 +231,10 @@ extension TrackerCreationViewController: UITableViewDelegate {
     }
 }
 
-// MARK: - TrackerScheduleViewControllerDelegate
-extension TrackerCreationViewController: TrackerScheduleViewControllerDelegate {
-    func addSchedule(schedule: [Int]) {
-        trackerSchedule = schedule
-        tableViewCellScheduleSubTitleData = ""
-        
-        for dayNum in schedule {
-            if let name = weekdaysNames[dayNum] {
-                tableViewCellScheduleSubTitleData += "\(name), "
-            }
-        }
-        if !tableViewCellScheduleSubTitleData.isEmpty {
-            tableViewCellScheduleSubTitleData = String(tableViewCellScheduleSubTitleData.dropLast(2))
-        }
-        tableView.reloadData()
-    }
-}
-
-extension TrackerCreationViewController: TrackerCategoryViewControllerDelegate {
+extension IrregularTrackerCreationViewController: TrackerCategoryViewControllerDelegate {
     func addCategory(category: String?) {
         trackerCategory = category
         tableView.reloadData()
     }
 }
+

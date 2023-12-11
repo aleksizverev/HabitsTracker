@@ -3,36 +3,6 @@ import UIKit
 final class TrackersListViewController: UIViewController {
     
     // MARK: - LogicVariables
-   /* private var allCategories: [TrackerCategory] = [
-        TrackerCategory(
-            title: "Household",
-            assignedTrackers: [
-                Tracker(id: 1, title: "Pour the flowers", color: .magenta, emoji: "❤️", schedule: [1, 2, 3, 6, 7])
-            ]
-        ),
-        TrackerCategory(
-            title: "Happy things",
-            assignedTrackers: [
-                Tracker(id: 2, title: "The cat blocked the camera on call", color: .orange, emoji: "😻", schedule: [1, 3, 4, 5]),
-                Tracker(id: 3, title: "Grandma sent postcard in Telegram", color: .red, emoji: "🌺",     schedule: [1, 3, 4, 5]),
-                Tracker(id: 4, title: "Dates in April", color: .blue, emoji: "❤️",                      schedule: [2, 4, 5, 7])
-            ]
-        ),
-        TrackerCategory(
-            title: "Reading",
-            assignedTrackers: [
-                Tracker(id: 5, title: "Read some books", color: .brown, emoji: "📙", schedule: [1, 2, 3, 4, 5])
-            ]
-        ),
-    ]
-    private var allTrackers: [Tracker] = [
-        Tracker(id: 1, title: "Pour the flowers", color: .magenta, emoji: "❤️", schedule: [1, 2, 3, 6, 7]),
-        Tracker(id: 2, title: "The cat blocked the camera on call", color: .orange, emoji: "😻", schedule: [1, 3, 4, 5]),
-        Tracker(id: 3, title: "Grandma sent postcard in Telegram", color: .red, emoji: "🌺",     schedule: [1, 3, 4, 5]),
-        Tracker(id: 4, title: "Dates in April", color: .blue, emoji: "❤️",                      schedule: [2, 4, 5, 7]),
-        Tracker(id: 5, title: "Read some books", color: .brown, emoji: "📙", schedule: [1, 2, 3, 4, 5])
-    ]
-    */
     
     let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
 
@@ -82,8 +52,8 @@ final class TrackersListViewController: UIViewController {
         
         self.view.backgroundColor = .white
         
-        setUpNavBar()
-        setUpCollectionView()
+        setupNavBar()
+        setupCollectionView()
         
         currentCategories = allCategories
         updateVisibleCategories(forDayOfTheWeek: getCurrentDayNaumber(date: Date()))
@@ -92,7 +62,7 @@ final class TrackersListViewController: UIViewController {
         applyConstraints()
     }
     
-    private func setUpNavBar(){
+    private func setupNavBar(){
         
         self.navigationItem.searchController = searchController
         self.navigationItem.searchController?.searchResultsUpdater = self
@@ -124,7 +94,7 @@ final class TrackersListViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = plusButton
         self.navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: -12, bottom: 0, right: 0)
     }
-    private func setUpCollectionView(){
+    private func setupCollectionView(){
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -182,10 +152,11 @@ final class TrackersListViewController: UIViewController {
     @objc
     func handleNotification(_ notification: Notification) {
         if let userData = notification.userInfo,
-           let tracker = userData["Tracker"] as? Tracker {
+           let tracker = userData["Tracker"] as? Tracker,
+           let categoryTitle = userData["Category"] as? String {
             
             let newCategories = addNewCategory(toList: allCategories,
-                                               named: "Important",
+                                               named: categoryTitle,
                                                assignedTrackers: [tracker])
 
             allTrackers[tracker.id] = tracker
@@ -289,14 +260,6 @@ final class TrackersListViewController: UIViewController {
             return true
         }
         return false
-        /*,
-        let tracker = allTrackers.filter {$0.id == id}  // remains empty here!!
-        
-        if !tracker.isEmpty {
-            return tracker.schedule.contains(getCurrentDayNaumber(date: currentDatePickerDateValue))
-        }
-        return false
-        */
     }
     private func isAllowedToBeCompletedToday() -> Bool {
         Date() >= currentDatePickerDateValue
@@ -318,17 +281,14 @@ final class TrackersListViewController: UIViewController {
         print("DEBUG PRINT! All categories: ", allCategories)
     
         NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"), object: nil)
-//        updateVisibleCategories()
     }
     
     // MARK: - Temporary functions
     private func randomColor() -> UIColor {
-        // Generate random values for red, green, and blue components
         let red = CGFloat.random(in: 0...1)
         let green = CGFloat.random(in: 0...1)
         let blue = CGFloat.random(in: 0...1)
         
-        // Create a new UIColor with the random components
         let color = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
         return color
     }
@@ -354,8 +314,12 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
             id = ""
         }
         
-        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as! TrackerCellHeader // TODO: remove!
-        //        guard let categories = currentCategories else { return view }
+        guard let view = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: id,
+            for: indexPath) as? TrackerCellHeader else {
+            return TrackerCellHeader()
+        }
         
         if currentCategories.isEmpty{ return view }
         view.titleLabel.text = currentCategories[indexPath.section].title
@@ -403,11 +367,23 @@ extension TrackersListViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TrackerCell", for: indexPath) as! TrackerCell // TODO: change!!
-        
-        if currentCategories.isEmpty { return cell}
-        
         let tracker: Tracker = currentCategories[indexPath.section].assignedTrackers[indexPath.row]
+        
+        guard var cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: "TrackerCell",
+            for: indexPath) as? TrackerCell
+        else {
+            var cell = TrackerCell()
+            cell = setupTrackerCell(cell: cell, using: tracker)
+            return TrackerCell()
+        }
+        
+        cell = setupTrackerCell(cell: cell, using: tracker)
+        return cell
+    }
+    
+    private func setupTrackerCell(cell: TrackerCell, using tracker: Tracker) -> TrackerCell {
+        if currentCategories.isEmpty { return cell }
         
         cell.setupTrackerCell(descriptionName: tracker.title,
                               emoji: tracker.emoji,
@@ -419,7 +395,6 @@ extension TrackersListViewController: UICollectionViewDataSource {
                               isCompletionAlowed: isAllowedToBeCompletedToday())
         
         cell.delegate = self
-        
         return cell
     }
 }

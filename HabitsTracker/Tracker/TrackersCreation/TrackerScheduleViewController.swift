@@ -86,7 +86,7 @@ final class TrackerScheduleViewController: UIViewController {
     private func applyConstraints() {
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             tableView.heightAnchor.constraint(equalToConstant: 525),
@@ -106,8 +106,11 @@ extension TrackerScheduleViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: "ScheduleCell", for: indexPath) as! ScheduleCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleCell",
+                                                 for: indexPath) as? ScheduleCell
+        else {
+            return ScheduleCell()
+        }
         
         cell.setupScheduleCell(labelText: String(describing: Weekdays.allCases[indexPath.row]),
                                switchTag: Weekdays.allCases[indexPath.row].rawValue)

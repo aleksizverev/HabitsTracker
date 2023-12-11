@@ -16,7 +16,7 @@ final class TrackerTypeChoiceViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.backgroundColor = UIColor(named: "YP Black")
         
-        button.addTarget(self, action: #selector(Self.didTapHabitCreationButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(Self.didTapTrackerCreationButton), for: .touchUpInside)
         
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -29,6 +29,9 @@ final class TrackerTypeChoiceViewController: UIViewController {
         button.tintColor = .red
         button.backgroundColor = UIColor(named: "YP Black")
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self,
+                         action: #selector(Self.didTapIrregularTrackerCreationButton),
+                         for: .touchUpInside)
         return button
     }()
     private var stackView: UIStackView = {
@@ -50,9 +53,16 @@ final class TrackerTypeChoiceViewController: UIViewController {
     }
     
     @objc
-    private func didTapHabitCreationButton(){
-        let trackerCreationVC = UINavigationController(rootViewController: TrackerCreationViewController())
+    private func didTapTrackerCreationButton() {
+        let trackerCreationVC = UINavigationController(
+            rootViewController: TrackerCreationViewController())
         present(trackerCreationVC, animated: true)
+    }
+    @objc
+    private func didTapIrregularTrackerCreationButton() {
+        let irregularTrackerCreationVC = UINavigationController(
+            rootViewController: IrregularTrackerCreationViewController())
+        present(irregularTrackerCreationVC, animated: true)
     }
     private func addSubviews() {
         view.addSubview(stackView)
