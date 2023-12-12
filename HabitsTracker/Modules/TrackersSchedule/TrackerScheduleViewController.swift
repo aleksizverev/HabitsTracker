@@ -17,9 +17,9 @@ final class TrackerScheduleViewController: UIViewController {
     
     weak var delegate: TrackerScheduleViewControllerDelegate?
     var chosenSchedule: Set<Int> = []
-
+    
     private var newSchedule: Set<Int> = []
-    private var doneButton: UIButton = {
+    private lazy var doneButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Done", for: .normal)
@@ -28,7 +28,7 @@ final class TrackerScheduleViewController: UIViewController {
         button.layer.cornerRadius = 16
         button.layer.masksToBounds = true
         button.backgroundColor = UIColor(named: "YP Black")
-        button.addTarget(self, action: #selector(Self.didTapDoneButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
         return button
     }()
     private var tableView: UITableView = {
@@ -58,13 +58,11 @@ final class TrackerScheduleViewController: UIViewController {
         applyConstraints()
     }
     
-    @objc
-    private func didTapDoneButton() {
+    @objc private func didTapDoneButton() {
         delegate?.addSchedule(schedule: newSchedule.sorted())
         self.dismiss(animated: true)
     }
-    @objc
-    private func onSwitchValueChanged(sender: UISwitch) {
+    @objc private func onSwitchValueChanged(sender: UISwitch) {
         let tag = sender.tag
         switch sender.isOn {
         case true:
@@ -77,7 +75,6 @@ final class TrackerScheduleViewController: UIViewController {
     private func isCurrentDayInChosenSchedule(day: Int) -> Bool {
         chosenSchedule.contains(day)
     }
-    
     
     private func addSubviews() {
         view.addSubview(doneButton)
@@ -107,7 +104,7 @@ extension TrackerScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleCell",
-                                                 for: indexPath) as? ScheduleCell
+                                                       for: indexPath) as? ScheduleCell
         else {
             return ScheduleCell()
         }
