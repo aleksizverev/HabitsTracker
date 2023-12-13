@@ -24,7 +24,7 @@ final class TrackerCategoryViewController: UIViewController {
         return tableView
     }()
     
-    private var doneButton: UIButton = {
+    private lazy var doneButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitle("Done", for: .normal)
@@ -47,8 +47,7 @@ final class TrackerCategoryViewController: UIViewController {
         applyConstraints()
     }
     
-    @objc
-    private func didTapDoneButton() {
+    @objc private func didTapDoneButton() {
         delegate?.addCategory(category: chosenCategory)
         self.dismiss(animated: true)
     }
@@ -68,7 +67,7 @@ final class TrackerCategoryViewController: UIViewController {
             doneButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            doneButton.heightAnchor.constraint(equalToConstant: 60),
+            doneButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
     
@@ -89,14 +88,6 @@ extension TrackerCategoryViewController: UITableViewDataSource {
         cell.textLabel?.textColor = UIColor(named: "YP Black")
         cell.textLabel?.font = UIFont.systemFont(ofSize: 17)
         cell.selectionStyle = .none
-        
-        /* TODO: single selection to be fixed in the next sprints
-        if let chosenCategory = chosenCategory,
-           availableCategories[indexPath.row] == chosenCategory {
-            cell.accessoryType = .checkmark
-            cell.isSelected = true
-        }
-         */
         return cell
     }
 }

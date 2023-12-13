@@ -230,16 +230,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "6DA2A483-041A-465B-A3D5-86B8DD051B80"
+            uuid = "E5EF1D17-3F39-465F-899D-D25458DECB72"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HabitsTracker/Modules/TrackersCreation/TrackerCreationViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "402"
-            endingLineNumber = "402"
-            landmarkName = "collectionView(_:cellForItemAt:)"
+            startingLineNumber = "449"
+            endingLineNumber = "449"
+            landmarkName = "collectionView(_:viewForSupplementaryElementOfKind:at:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

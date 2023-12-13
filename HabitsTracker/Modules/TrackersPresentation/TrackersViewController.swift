@@ -62,7 +62,7 @@ final class TrackersListViewController: UIViewController {
         applyConstraints()
     }
     
-    private func setupNavBar(){
+    private func setupNavBar() {
         
         self.navigationItem.searchController = searchController
         self.navigationItem.searchController?.searchResultsUpdater = self
@@ -94,19 +94,19 @@ final class TrackersListViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = plusButton
         self.navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: -12, bottom: 0, right: 0)
     }
-    private func setupCollectionView(){
+    private func setupCollectionView() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: "TrackerCell")
-        collectionView.register(TrackerCellHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
+        collectionView.register(TrackersCollectionViewSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collectionView.contentInset = UIEdgeInsets(top: 6, left: 16, bottom: 24, right: 16)
     }
     private func showEmptyScreen() {
         placeholderImageView.isHidden = false
         placeholderText.isHidden = false
     }
-    private func hideEmptyScreen(){
+    private func hideEmptyScreen() {
         placeholderImageView.isHidden = true
         placeholderText.isHidden = true
     }
@@ -133,24 +133,20 @@ final class TrackersListViewController: UIViewController {
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: staticView.bottomAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])}
     
     // MARK: - Selectors
-    @objc
-    private func createTrackerButtonDidTap(){
+    @objc private func createTrackerButtonDidTap() {
         let trackertypeChoiceVC = UINavigationController(rootViewController: TrackerTypeChoiceViewController())
         present(trackertypeChoiceVC, animated: true)
     }
-    @objc
-    private func datePickerValueChanged(_ sender: UIDatePicker){
+    @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let senderDate = sender.date
-        let weekDay = getCurrentDayNaumber(date: senderDate)
         currentDatePickerDateValue = senderDate
         updateVisibleCategories()
     }
-    @objc
-    func handleNotification(_ notification: Notification) {
+    @objc func handleNotification(_ notification: Notification) {
         if let userData = notification.userInfo,
            let tracker = userData["Tracker"] as? Tracker,
            let categoryTitle = userData["Category"] as? String {
@@ -172,7 +168,9 @@ final class TrackersListViewController: UIViewController {
         allCategories.forEach { category in
             category.assignedTrackers.forEach { tracker in
                 if isTrackerSetForCurrentDatePickerValue(withID: tracker.id) {
-                    currentCategories = addNewCategory(toList: currentCategories , named: category.title, assignedTrackers: [tracker])
+                    currentCategories = addNewCategory(toList: currentCategories,
+                                                       named: category.title,
+                                                       assignedTrackers: [tracker])
                 }
             }
         }
@@ -218,7 +216,6 @@ final class TrackersListViewController: UIViewController {
             newTrackersList.append(contentsOf: trackers)
         }
         
-        
         /* Creates new category */
         let category = TrackerCategory(title: categoryName, assignedTrackers: newTrackersList)
         
@@ -236,7 +233,7 @@ final class TrackersListViewController: UIViewController {
         return newCategoriesList
     }
     private func getRecordsForTracker(withId id: UUID) -> [TrackerRecord] {
-        completedTrackers.filter {$0.id == id}
+        completedTrackers.filter { $0.id == id }
     }
     private func getCurrentDayNaumber(date: Date) -> Int {
         var weekDay = myCalendar.component(.weekday, from: date)
@@ -317,11 +314,13 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
         guard let view = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: id,
-            for: indexPath) as? TrackerCellHeader else {
-            return TrackerCellHeader()
+            for: indexPath) as? TrackersCollectionViewSectionHeader else {
+            return TrackersCollectionViewSectionHeader()
         }
         
-        if currentCategories.isEmpty{ return view }
+        if currentCategories.isEmpty {
+            return view
+        }
         view.titleLabel.text = currentCategories[indexPath.section].title
         
         return view
@@ -357,7 +356,7 @@ extension TrackersListViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if !currentCategories.isEmpty{
+        if !currentCategories.isEmpty {
             hideEmptyScreen()
             return currentCategories[section].assignedTrackers.count
         }
@@ -383,7 +382,9 @@ extension TrackersListViewController: UICollectionViewDataSource {
     }
     
     private func setupTrackerCell(cell: TrackerCell, using tracker: Tracker) -> TrackerCell {
-        if currentCategories.isEmpty { return cell }
+        if currentCategories.isEmpty {
+            return cell
+        }
         
         cell.setupTrackerCell(descriptionName: tracker.title,
                               emoji: tracker.emoji,

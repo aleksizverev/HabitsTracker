@@ -55,10 +55,9 @@ final class TrackerCell: UICollectionViewCell {
         label.text = "0 days"
         return label
     }()
-    private var completionButton: UIButton = {
-        let image = UIImage(systemName: "plus")
+    private lazy var completionButton: UIButton = {
         let button = UIButton.systemButton(
-            with: image!,
+            with: UIImage(systemName: "plus") ?? UIImage(),
             target: self,
             action: #selector(Self.completionButtonDidTap))
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -76,9 +75,10 @@ final class TrackerCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc
-    private func completionButtonDidTap() {
-        if !isAllowedToBeCompletedToday { return }
+    @objc private func completionButtonDidTap() {
+        if !isAllowedToBeCompletedToday {
+            return
+        }
 
         if !isCompletedToday {
             completionCounter += 1
@@ -114,15 +114,14 @@ final class TrackerCell: UICollectionViewCell {
             habitDescriptionLabel.topAnchor.constraint(greaterThanOrEqualTo: emojiLabel.bottomAnchor, constant: 8),
             habitDescriptionLabel.bottomAnchor.constraint(equalTo: cellDescriptionView.bottomAnchor, constant: -12),
             
-            
             statisticsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             statisticsLabel.topAnchor.constraint(equalTo: cellDescriptionView.bottomAnchor, constant: 16),
             
             completionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            completionButton.centerYAnchor.constraint(equalTo: statisticsLabel.centerYAnchor),
+            completionButton.centerYAnchor.constraint(equalTo: statisticsLabel.centerYAnchor)
         ])
     }
-    private func updateHabitStatisticsLabelDays(){
+    private func updateHabitStatisticsLabelDays() {
         statisticsLabel.text = completionCounter == 1
         ? String(completionCounter) + " day"
         : String(completionCounter) + " days"

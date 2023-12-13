@@ -45,5 +45,4 @@ final class ScheduleCell: UITableViewCell {
             switcher.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
     }
-    
 }

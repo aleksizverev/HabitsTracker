@@ -1,6 +1,6 @@
 import UIKit
 
-final class TrackerCellHeader: UICollectionReusableView {
+final class PropertiesCollectionViewSectionHeader: UICollectionReusableView {
     let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -17,9 +17,10 @@ final class TrackerCellHeader: UICollectionReusableView {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 9),
+            titleLabel.bottomAnchor.constraint(equalTo: topAnchor, constant: 24),
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
     }
     

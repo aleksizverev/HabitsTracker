@@ -24,7 +24,7 @@ final class IrregularTrackerCreationViewController: UIViewController {
         let paragraphStyle = NSMutableParagraphStyle()
         let placeholderText = NSAttributedString(
             string: "Enter tracker name",
-            attributes: [.foregroundColor: UIColor(named: "YP Gray"),
+            attributes: [.foregroundColor: UIColor(named: "YP Gray") ?? .lightGray,
                          .font: UIFont.systemFont(ofSize: 17, weight: .regular),
                          .paragraphStyle: paragraphStyle])
         textField.attributedPlaceholder = placeholderText
@@ -98,19 +98,22 @@ final class IrregularTrackerCreationViewController: UIViewController {
     }
     
     // MARK: - Selectors
-    @objc
-    private func didTapCancelButton() {
+    @objc private func didTapCancelButton() {
         self.dismiss(animated: true)
     }
-    @objc
-    private func didTypeText(sender: UITextField) {
-        guard let title = sender.text else { return }
+    @objc private func didTypeText(sender: UITextField) {
+        guard let title = sender.text else {
+            return
+        }
         trackerTitle = title
     }
-    @objc
-    private func didTapCreationButton(){
-        guard let trackerTitle = trackerTitle else { return }
-        guard let trackerCategory = trackerCategory else { return }
+    @objc private func didTapCreationButton() {
+        guard let trackerTitle = trackerTitle else {
+            return
+        }
+        guard let trackerCategory = trackerCategory else {
+            return
+        }
         
         let tracker = Tracker(id: UUID(),
                               title: trackerTitle,
@@ -121,7 +124,7 @@ final class IrregularTrackerCreationViewController: UIViewController {
         NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"),
                                         object: nil,
                                         userInfo: ["Tracker": tracker,
-                                                   "Category" : trackerCategory ])
+                                                   "Category": trackerCategory ])
         
         self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }

@@ -9,7 +9,7 @@ final class TrackerTypeChoiceViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    private var habitButton: UIButton = {
+    private lazy var habitButton: UIButton = {
         let button = UIButton()
         button.setTitle("Habit", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
@@ -21,7 +21,7 @@ final class TrackerTypeChoiceViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
-    private var irregularEventButton: UIButton = {
+    private lazy var irregularEventButton: UIButton = {
         let button = UIButton()
         button.setTitle("Irregular event", for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
@@ -52,14 +52,12 @@ final class TrackerTypeChoiceViewController: UIViewController {
         applyConstraints()
     }
     
-    @objc
-    private func didTapTrackerCreationButton() {
+    @objc private func didTapTrackerCreationButton() {
         let trackerCreationVC = UINavigationController(
             rootViewController: TrackerCreationViewController())
         present(trackerCreationVC, animated: true)
     }
-    @objc
-    private func didTapIrregularTrackerCreationButton() {
+    @objc private func didTapIrregularTrackerCreationButton() {
         let irregularTrackerCreationVC = UINavigationController(
             rootViewController: IrregularTrackerCreationViewController())
         present(irregularTrackerCreationVC, animated: true)

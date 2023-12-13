@@ -1,6 +1,13 @@
 import UIKit
 
 final class EmojiCell: UICollectionViewCell {
+    private var subView: UIView = {
+        let subView = UIView(frame: CGRect(x: 0, y: 0, width: 46, height: 46))
+        subView.translatesAutoresizingMaskIntoConstraints = false
+        subView.layer.cornerRadius = 16
+        subView.layer.masksToBounds = true
+        return subView
+    }()
     private var emojiLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -19,16 +26,28 @@ final class EmojiCell: UICollectionViewCell {
     }
     
     private func addSubviews() {
-        contentView.addSubview(emojiLabel)
+        contentView.addSubview(subView)
+        subView.addSubview(emojiLabel)
     }
     private func applyConstraints() {
         NSLayoutConstraint.activate([
-            emojiLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            emojiLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            subView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            subView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            subView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            subView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            emojiLabel.centerXAnchor.constraint(equalTo: subView.centerXAnchor),
+            emojiLabel.centerYAnchor.constraint(equalTo: subView.centerYAnchor)
         ])
     }
     
     func setEmoji(emoji: String) {
         emojiLabel.text = emoji
+    }
+    func didSelectEmoji() {
+        subView.backgroundColor = UIColor(named: "YP Background")
+    }
+    func didDeselectEmoji() {
+        subView.backgroundColor = .clear
     }
 }

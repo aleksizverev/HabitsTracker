@@ -45,6 +45,4 @@ final class CategoryCell: UITableViewCell {
             switcher.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
         ])
     }
-    
 }
-
