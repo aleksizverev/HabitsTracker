@@ -3,7 +3,6 @@ import UIKit
 final class TrackersListViewController: UIViewController {
     
     // MARK: - LogicVariables
-    
     let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
 
     private var allCategories: [TrackerCategory] = []
@@ -154,7 +153,7 @@ final class TrackersListViewController: UIViewController {
             let newCategories = addNewCategory(toList: allCategories,
                                                named: categoryTitle,
                                                assignedTrackers: [tracker])
-
+            
             allTrackers[tracker.id] = tracker
             allCategories = newCategories
             updateVisibleCategories()
@@ -276,7 +275,7 @@ final class TrackersListViewController: UIViewController {
         allTrackers[tracker.id] = tracker
         allCategories = newCategories
         print("DEBUG PRINT! All categories: ", allCategories)
-    
+        
         NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"), object: nil)
     }
     
@@ -288,7 +287,7 @@ final class TrackersListViewController: UIViewController {
         
         let color = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
         return color
-    }
+    } // TODO: remove!!!
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
