@@ -1,13 +1,26 @@
 import UIKit
 
+/*
+ План:
+  + Дописать функции делегата FetchRequestController
+  - При инициализации TrackerViewController запрашивать данные из БД и обновлять видимые категории
+  - При нажатии на кнопку создания трекера должна вызываться функция addNewTracker в TrackerStore
+  + Дописать функцию делегата TrackerStore (пока она должна вызывать обновление коллекции,
+    позже - BatchUpdates)
+ */
+
 final class TrackersListViewController: UIViewController {
+    
+    // MARK: - Stores
+    let categoryStore = TrackerCategoryStore()
+    let trackerStore = TrackerStore()
     
     // MARK: - LogicVariables
     let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
 
     private var allCategories: [TrackerCategory] = []
     private var allTrackers = [UUID: Tracker]()
-    private var currentCategories: [TrackerCategory] = []
+    private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var currentDatePickerDateValue: Date = Date()
     private let myCalendar = Calendar(identifier: .gregorian)
@@ -51,11 +64,16 @@ final class TrackersListViewController: UIViewController {
         
         self.view.backgroundColor = .white
         
+        trackerStore.delegate = self
+        
         setupNavBar()
         setupCollectionView()
+//        categoryStore.setupCategoryDataBase()
         
-        currentCategories = allCategories
-        updateVisibleCategories(forDayOfTheWeek: getCurrentDayNaumber(date: Date()))
+        allCategories = categoryStore.categories
+        visibleCategories = allCategories
+//        updateVisibleCategories(forDayOfTheWeek: getCurrentDayNaumber(date: Date()))
+        collectionView.reloadData()
         
         addSubviews()
         applyConstraints()
@@ -150,12 +168,18 @@ final class TrackersListViewController: UIViewController {
            let tracker = userData["Tracker"] as? Tracker,
            let categoryTitle = userData["Category"] as? String {
             
+            /*
             let newCategories = addNewCategory(toList: allCategories,
                                                named: categoryTitle,
                                                assignedTrackers: [tracker])
+            allCategories = newCategories
+             */
+            
+            let categoryCoreData = categoryStore.getCategoryWithTitle(title: categoryTitle)
+            
+            trackerStore.addNewTracker(tracker: tracker, category: categoryCoreData)
             
             allTrackers[tracker.id] = tracker
-            allCategories = newCategories
             updateVisibleCategories()
         }
     }
@@ -163,17 +187,17 @@ final class TrackersListViewController: UIViewController {
     // MARK: - LogicFunctions
     private func updateVisibleCategories(forDayOfTheWeek dayNumber: Int) {
         print(allCategories)
-        currentCategories = []
+        visibleCategories = []
         allCategories.forEach { category in
             category.assignedTrackers.forEach { tracker in
                 if isTrackerSetForCurrentDatePickerValue(withID: tracker.id) {
-                    currentCategories = addNewCategory(toList: currentCategories,
+                    visibleCategories = addNewCategory(toList: visibleCategories,
                                                        named: category.title,
                                                        assignedTrackers: [tracker])
                 }
             }
         }
-        print("DEBUG PRINT! Current categories: ", currentCategories)
+        print("DEBUG PRINT! Current categories: ", visibleCategories)
         collectionView.reloadData()
     }
     private func updateVisibleCategories() {
@@ -195,7 +219,7 @@ final class TrackersListViewController: UIViewController {
                 filteredCategories = addNewCategory(toList: filteredCategories, named: category.title, assignedTrackers: foundTrackers)
             }
         }
-        currentCategories = filteredCategories
+        visibleCategories = filteredCategories
         collectionView.reloadData()
     }
     private func addNewCategory(toList oldCategoriesList: [TrackerCategory],
@@ -264,7 +288,7 @@ final class TrackersListViewController: UIViewController {
     func createTracker(title: String, categoryTitle: String, schedule: [Int]) {
         let tracker = Tracker(id: UUID(),
                               title: title,
-                              color: randomColor(),
+                              color: UIColor().randomColor(),
                               emoji: emojis[Int.random(in: 0...emojis.count)],
                               schedule: schedule)
         
@@ -278,16 +302,6 @@ final class TrackersListViewController: UIViewController {
         
         NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"), object: nil)
     }
-    
-    // MARK: - Temporary functions
-    private func randomColor() -> UIColor {
-        let red = CGFloat.random(in: 0...1)
-        let green = CGFloat.random(in: 0...1)
-        let blue = CGFloat.random(in: 0...1)
-        
-        let color = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
-        return color
-    } // TODO: remove!!!
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -317,10 +331,10 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
             return TrackersCollectionViewSectionHeader()
         }
         
-        if currentCategories.isEmpty {
+        if visibleCategories.isEmpty {
             return view
         }
-        view.titleLabel.text = currentCategories[indexPath.section].title
+        view.titleLabel.text = visibleCategories[indexPath.section].title
         
         return view
     }
@@ -345,19 +359,19 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - UICollectionViewDataSource
 extension TrackersListViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if currentCategories.isEmpty {
+        if visibleCategories.isEmpty {
             showEmptyScreen()
             return 1
         }
         hideEmptyScreen()
-        return currentCategories.count
+        return visibleCategories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if !currentCategories.isEmpty {
+        if !visibleCategories.isEmpty {
             hideEmptyScreen()
-            return currentCategories[section].assignedTrackers.count
+            return visibleCategories[section].assignedTrackers.count
         }
         showEmptyScreen()
         return 0
@@ -365,7 +379,7 @@ extension TrackersListViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let tracker: Tracker = currentCategories[indexPath.section].assignedTrackers[indexPath.row]
+        let tracker: Tracker = visibleCategories[indexPath.section].assignedTrackers[indexPath.row]
         
         guard var cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "TrackerCell",
@@ -381,7 +395,7 @@ extension TrackersListViewController: UICollectionViewDataSource {
     }
     
     private func setupTrackerCell(cell: TrackerCell, using tracker: Tracker) -> TrackerCell {
-        if currentCategories.isEmpty {
+        if visibleCategories.isEmpty {
             return cell
         }
         
@@ -427,6 +441,13 @@ extension TrackersListViewController: UISearchResultsUpdating {
 extension TrackersListViewController: UISearchControllerDelegate {
     func willDismissSearchController(_ searchController: UISearchController) {
         updateVisibleCategories(forDayOfTheWeek: getCurrentDayNaumber(date: currentDatePickerDateValue))
+        collectionView.reloadData()
+    }
+}
+
+extension TrackersListViewController: TrackerStoreDelegate {
+    func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
+        allCategories = categoryStore.categories
         collectionView.reloadData()
     }
 }

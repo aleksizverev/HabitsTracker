@@ -6,16 +6,16 @@
         <relationship name="trackers" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerCoreData" inverseName="category" inverseEntity="TrackerCoreData"/>
     </entity>
     <entity name="TrackerCoreData" representedClassName="TrackerCoreData" syncable="YES" codeGenerationType="class">
-        <attribute name="color" attributeType="Transformable"/>
+        <attribute name="color" attributeType="String"/>
         <attribute name="emoji" attributeType="String"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="schedule" attributeType="Transformable"/>
+        <attribute name="schedule" attributeType="Binary"/>
         <attribute name="title" attributeType="String"/>
         <relationship name="category" maxCount="1" deletionRule="Nullify" destinationEntity="TrackerCategoryCoreData" inverseName="trackers" inverseEntity="TrackerCategoryCoreData"/>
-        <relationship name="trackerToSchedule" maxCount="1" deletionRule="Nullify" destinationEntity="TrackerScheduleCoreData" inverseName="tracker" inverseEntity="TrackerScheduleCoreData"/>
+        <relationship name="trackerToSchedule" maxCount="1" deletionRule="Nullify"/>
     </entity>
     <entity name="TrackerScheduleCoreData" representedClassName="TrackerScheduleCoreData" syncable="YES" codeGenerationType="class">
         <attribute name="schedule" attributeType="Transformable"/>
-        <relationship name="tracker" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerCoreData" inverseName="trackerToSchedule" inverseEntity="TrackerCoreData"/>
+        <relationship name="tracker" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerCoreData"/>
     </entity>
 </model>
