@@ -21,8 +21,8 @@ final class TrackerCategoryStore {
     
     var categories: [TrackerCategory] {
         guard
-            let objects = self.fetchResultsController.fetchedObjects,
-            let categories = try? objects.map({ try self.category(from: $0) }) else {
+            let objects = fetchResultsController.fetchedObjects,
+            let categories = try? objects.map({ try category(from: $0) }) else {
             return []
         }
         return categories

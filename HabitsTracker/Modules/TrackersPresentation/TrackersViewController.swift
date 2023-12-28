@@ -14,15 +14,17 @@ final class TrackersListViewController: UIViewController {
     // MARK: - Stores
     let categoryStore = TrackerCategoryStore()
     let trackerStore = TrackerStore()
+//    let recordStore = TrackerRecordStore()
     
     // MARK: - LogicVariables
     let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
 
     private var allCategories: [TrackerCategory] = []
-    private var allTrackers = [UUID: Tracker]()
+//    private var allTrackers = [UUID: Tracker]()
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var currentDatePickerDateValue: Date = Date()
+    private lazy var currentDayNumber: Int = getCurrentDayNaumber(date: currentDatePickerDateValue)
     private let myCalendar = Calendar(identifier: .gregorian)
     
     // MARK: - UIVariables
@@ -68,12 +70,13 @@ final class TrackersListViewController: UIViewController {
         
         setupNavBar()
         setupCollectionView()
-//        categoryStore.setupCategoryDataBase()
+        categoryStore.setupCategoryDataBase()
         
         allCategories = categoryStore.categories
         visibleCategories = allCategories
+        updateVisibleCategories()
 //        updateVisibleCategories(forDayOfTheWeek: getCurrentDayNaumber(date: Date()))
-        collectionView.reloadData()
+//        collectionView.reloadData()
         
         addSubviews()
         applyConstraints()
@@ -161,6 +164,7 @@ final class TrackersListViewController: UIViewController {
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let senderDate = sender.date
         currentDatePickerDateValue = senderDate
+        currentDayNumber = getCurrentDayNaumber(date: senderDate)
         updateVisibleCategories()
     }
     @objc func handleNotification(_ notification: Notification) {
@@ -173,31 +177,29 @@ final class TrackersListViewController: UIViewController {
                                                named: categoryTitle,
                                                assignedTrackers: [tracker])
             allCategories = newCategories
+            allTrackers[tracker.id] = tracker
              */
             
             let categoryCoreData = categoryStore.getCategoryWithTitle(title: categoryTitle)
+            trackerStore.createNewTracker(tracker: tracker, to: categoryCoreData)
             
-            trackerStore.addNewTracker(tracker: tracker, category: categoryCoreData)
-            
-            allTrackers[tracker.id] = tracker
             updateVisibleCategories()
         }
     }
     
     // MARK: - LogicFunctions
     private func updateVisibleCategories(forDayOfTheWeek dayNumber: Int) {
-        print(allCategories)
         visibleCategories = []
         allCategories.forEach { category in
             category.assignedTrackers.forEach { tracker in
-                if isTrackerSetForCurrentDatePickerValue(withID: tracker.id) {
+                if tracker.isScheduledForDayNumber(currentDayNumber) {
                     visibleCategories = addNewCategory(toList: visibleCategories,
                                                        named: category.title,
                                                        assignedTrackers: [tracker])
                 }
             }
         }
-        print("DEBUG PRINT! Current categories: ", visibleCategories)
+        print("DEBUG PRINT! Current visible categories: ", visibleCategories)
         collectionView.reloadData()
     }
     private func updateVisibleCategories() {
@@ -205,7 +207,7 @@ final class TrackersListViewController: UIViewController {
             let searchQuery = searchController.searchBar.text?.lowercased(),
             !searchQuery.isEmpty
         else {
-            updateVisibleCategories(forDayOfTheWeek: getCurrentDayNaumber(date: currentDatePickerDateValue))
+            updateVisibleCategories(forDayOfTheWeek: currentDayNumber)
             return
         }
         
@@ -213,7 +215,7 @@ final class TrackersListViewController: UIViewController {
         allCategories.forEach { category in
             let foundTrackers = category.assignedTrackers.filter {
                 $0.title.lowercased().contains(searchQuery) &&
-                isTrackerSetForCurrentDatePickerValue(withID: $0.id)
+                $0.isScheduledForDayNumber(currentDayNumber)
             }
             if !foundTrackers.isEmpty {
                 filteredCategories = addNewCategory(toList: filteredCategories, named: category.title, assignedTrackers: foundTrackers)
@@ -272,19 +274,13 @@ final class TrackersListViewController: UIViewController {
             myCalendar.isDate($0.date, equalTo: currentDatePickerDateValue, toGranularity: .day)
         }
     }
-    private func isTrackerSetForCurrentDatePickerValue(withID id: UUID) -> Bool {
-        if let tracker = allTrackers[id],
-           tracker.schedule.contains(getCurrentDayNaumber(date: currentDatePickerDateValue)) {
-            
-            print("DEBUG PRINT! Tracker found")
-            return true
-        }
-        return false
-    }
+//    private func isTrackerScheduledForToday(tracker: Tracker) -> Bool {
+//        tracker.schedule.contains(getCurrentDayNaumber(date: currentDatePickerDateValue))
+//    }
     private func isAllowedToBeCompletedToday() -> Bool {
         Date() >= currentDatePickerDateValue
     }
-    
+    /*
     func createTracker(title: String, categoryTitle: String, schedule: [Int]) {
         let tracker = Tracker(id: UUID(),
                               title: title,
@@ -302,6 +298,7 @@ final class TrackersListViewController: UIViewController {
         
         NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"), object: nil)
     }
+     */
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -440,7 +437,7 @@ extension TrackersListViewController: UISearchResultsUpdating {
 // MARK: - UISearchControllerDelegate
 extension TrackersListViewController: UISearchControllerDelegate {
     func willDismissSearchController(_ searchController: UISearchController) {
-        updateVisibleCategories(forDayOfTheWeek: getCurrentDayNaumber(date: currentDatePickerDateValue))
+        updateVisibleCategories(forDayOfTheWeek: currentDayNumber)
         collectionView.reloadData()
     }
 }

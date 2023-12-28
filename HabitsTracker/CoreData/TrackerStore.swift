@@ -19,9 +19,10 @@ protocol TrackerStoreDelegate: AnyObject {
 final class TrackerStore: NSObject {
     private let context: NSManagedObjectContext
     private let uiColorMarshalling = UIColorMarshalling()
+    
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerCoreData> = {
         let fetchRequest = TrackerCoreData.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: false)]
         
         let fetchResultsController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
@@ -29,12 +30,20 @@ final class TrackerStore: NSObject {
             sectionNameKeyPath: nil,
             cacheName: nil)
         
-        fetchResultsController.delegate = self
+//        fetchResultsController.delegate = self
         try? fetchResultsController.performFetch()
         return fetchResultsController
     }()
     
-    private var insertedIndexes: IndexSet?
+    var trackers: [Tracker] {
+        guard
+            let objects = fetchResultsController.fetchedObjects,
+            let trackers = try? objects.map({ try tracker(from: $0) })
+        else {
+            return []
+        }
+        return trackers
+    }
     
     weak var delegate: TrackerStoreDelegate?
     
@@ -50,7 +59,15 @@ final class TrackerStore: NSObject {
         self.context = context
     }
     
-    func addNewTracker(tracker: Tracker, category: TrackerCategoryCoreData) {
+    func tracker(from tracker: TrackerCoreData) -> Tracker { // TODO: remove force unwrap
+        return Tracker(id: tracker.id!,
+                       title: tracker.title!,
+                       color: uiColorMarshalling.color(from: tracker.color!),
+                       emoji: tracker.emoji!,
+                       schedule: tracker.schedule!)
+    }
+    
+    func createNewTracker(tracker: Tracker, to categoryCoreData: TrackerCategoryCoreData) {
         let newTracker = TrackerCoreData(context: context)
         newTracker.id = tracker.id
         newTracker.title = tracker.title
@@ -58,12 +75,18 @@ final class TrackerStore: NSObject {
         newTracker.color = uiColorMarshalling.hexString(from: tracker.color)
         newTracker.schedule = tracker.schedule
         
-        category.addToTracker(newTracker)
+        categoryCoreData.addToTracker(newTracker)
         
         delegate?.store(self, didUpdate: TrackerStoreUpdate(insertedIndexes: IndexSet()))
         try? context.save()
     }
 }
+
+
+
+/*
+
+private var insertedIndexes: IndexSet?
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
@@ -90,3 +113,4 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         }
     }
 }
+*/
