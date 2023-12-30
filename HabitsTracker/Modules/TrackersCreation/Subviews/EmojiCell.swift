@@ -50,4 +50,10 @@ final class EmojiCell: UICollectionViewCell {
     func didDeselectEmoji() {
         subView.backgroundColor = .clear
     }
+    func getCellEmoji() -> String {
+        guard let emoji = emojiLabel.text else {
+            return ""
+        }
+        return emoji
+    }
 }

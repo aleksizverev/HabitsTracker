@@ -1,7 +1,12 @@
 import UIKit
 import CoreData
 
-final class TrackerCategoryStore {
+enum CategoryStoreErrors: Error {
+    case categoryRetrievalError
+    case cateryCastError
+}
+
+final class TrackerCategoryStore: NSObject {
     private let context: NSManagedObjectContext
     private let uiColorMarshalling = UIColorMarshalling()
     
@@ -28,7 +33,7 @@ final class TrackerCategoryStore {
         return categories
     }
     
-    convenience init() {
+    convenience override init() {
         guard let delegate = (UIApplication.shared.delegate as? AppDelegate) else {
             fatalError("Unable to get context")
         }
@@ -38,22 +43,24 @@ final class TrackerCategoryStore {
     
     init(context: NSManagedObjectContext) {
         self.context = context
+        super.init()
     }
     
-    func getCategoryWithTitle(title: String) -> TrackerCategoryCoreData {
+    func getCategory(withTitle title: String) throws -> TrackerCategoryCoreData {
         let request = TrackerCategoryCoreData.fetchRequest()
         request.returnsObjectsAsFaults = false
-        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCategoryCoreData.title), title)
+        request.predicate = NSPredicate(format: "%K == %@",
+                                        #keyPath(TrackerCategoryCoreData.title), title)
         let category = try? context.fetch(request)
         guard let category = category?.first else {
-            fatalError("Unable to fetch category")
+            throw CategoryStoreErrors.categoryRetrievalError
         }
         return category
     }
     
-    func category(from categoryCoreData: TrackerCategoryCoreData) -> TrackerCategory {
+    func category(from categoryCoreData: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let categoryTitle = categoryCoreData.title else {
-            fatalError("Unable to convert category title")
+            throw CategoryStoreErrors.cateryCastError
         }
         
         guard let trackers = categoryCoreData.tracker else {
@@ -62,15 +69,24 @@ final class TrackerCategoryStore {
         }
         
         var assignedTrackers: [Tracker] = []
-        trackers.forEach { tracker in
+        try? trackers.forEach { tracker in
             guard let tracker = tracker as? TrackerCoreData else {
-                fatalError()
+                throw TrackerStorageErrors.trackerCastError
             }
-            assignedTrackers.append(Tracker(id: tracker.id!,
-                                            title: tracker.title!,
-                                            color: uiColorMarshalling.color(from: tracker.color!),
-                                            emoji: tracker.emoji!,
-                                            schedule: tracker.schedule!))
+            guard
+                let id = tracker.trackerID,
+                let title = tracker.title,
+                let color = tracker.color,
+                let emoji = tracker.emoji,
+                let schedule = tracker.schedule
+            else {
+                throw TrackerStorageErrors.trackerRetrievalError
+            }
+            assignedTrackers.append(Tracker(id: id,
+                                            title: title,
+                                            color: uiColorMarshalling.color(from: color),
+                                            emoji: emoji,
+                                            schedule: schedule))
         }
         
         return TrackerCategory(title: categoryTitle,
@@ -78,15 +94,6 @@ final class TrackerCategoryStore {
     }
     
     func setupCategoryDataBase() {
-        /*
-        let newTracker = TrackerCoreData(context: context)
-        newTracker.id = UUID()
-        newTracker.title = "Test Title"
-        newTracker.emoji = "🚀"
-        newTracker.color = uiColorMarshalling.hexString(from: UIColor().randomColor())
-        newTracker.schedule = [1, 2, 3, 4, 5]
-        */
-         
         let tmpCategory1 = TrackerCategoryCoreData(context: context)
         tmpCategory1.title = "Important"
         

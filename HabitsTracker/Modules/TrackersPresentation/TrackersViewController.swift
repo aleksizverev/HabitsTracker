@@ -1,29 +1,19 @@
 import UIKit
 
-/*
- План:
-  + Дописать функции делегата FetchRequestController
-  - При инициализации TrackerViewController запрашивать данные из БД и обновлять видимые категории
-  - При нажатии на кнопку создания трекера должна вызываться функция addNewTracker в TrackerStore
-  + Дописать функцию делегата TrackerStore (пока она должна вызывать обновление коллекции,
-    позже - BatchUpdates)
- */
-
 final class TrackersListViewController: UIViewController {
     
     // MARK: - Stores
     let categoryStore = TrackerCategoryStore()
     let trackerStore = TrackerStore()
-//    let recordStore = TrackerRecordStore()
+    let recordStore = TrackerRecordStore()
     
     // MARK: - LogicVariables
     let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
-
+    
     private var allCategories: [TrackerCategory] = []
-//    private var allTrackers = [UUID: Tracker]()
     private var visibleCategories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
-    private var currentDatePickerDateValue: Date = Date()
+    private lazy var currentDatePickerDateValue: Date = myCalendar.startOfDay(for: Date())
     private lazy var currentDayNumber: Int = getCurrentDayNaumber(date: currentDatePickerDateValue)
     private let myCalendar = Calendar(identifier: .gregorian)
     
@@ -72,11 +62,10 @@ final class TrackersListViewController: UIViewController {
         setupCollectionView()
         categoryStore.setupCategoryDataBase()
         
+        completedTrackers = recordStore.records
         allCategories = categoryStore.categories
         visibleCategories = allCategories
         updateVisibleCategories()
-//        updateVisibleCategories(forDayOfTheWeek: getCurrentDayNaumber(date: Date()))
-//        collectionView.reloadData()
         
         addSubviews()
         applyConstraints()
@@ -163,7 +152,7 @@ final class TrackersListViewController: UIViewController {
     }
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let senderDate = sender.date
-        currentDatePickerDateValue = senderDate
+        currentDatePickerDateValue = myCalendar.startOfDay(for: senderDate)
         currentDayNumber = getCurrentDayNaumber(date: senderDate)
         updateVisibleCategories()
     }
@@ -171,18 +160,12 @@ final class TrackersListViewController: UIViewController {
         if let userData = notification.userInfo,
            let tracker = userData["Tracker"] as? Tracker,
            let categoryTitle = userData["Category"] as? String {
-            
-            /*
-            let newCategories = addNewCategory(toList: allCategories,
-                                               named: categoryTitle,
-                                               assignedTrackers: [tracker])
-            allCategories = newCategories
-            allTrackers[tracker.id] = tracker
-             */
-            
-            let categoryCoreData = categoryStore.getCategoryWithTitle(title: categoryTitle)
+        
+            let categoryCoreData = try? categoryStore.getCategory(withTitle: categoryTitle)
+            guard let categoryCoreData = categoryCoreData else {
+                return
+            }
             trackerStore.createNewTracker(tracker: tracker, to: categoryCoreData)
-            
             updateVisibleCategories()
         }
     }
@@ -199,7 +182,6 @@ final class TrackersListViewController: UIViewController {
                 }
             }
         }
-        print("DEBUG PRINT! Current visible categories: ", visibleCategories)
         collectionView.reloadData()
     }
     private func updateVisibleCategories() {
@@ -274,31 +256,9 @@ final class TrackersListViewController: UIViewController {
             myCalendar.isDate($0.date, equalTo: currentDatePickerDateValue, toGranularity: .day)
         }
     }
-//    private func isTrackerScheduledForToday(tracker: Tracker) -> Bool {
-//        tracker.schedule.contains(getCurrentDayNaumber(date: currentDatePickerDateValue))
-//    }
     private func isAllowedToBeCompletedToday() -> Bool {
         Date() >= currentDatePickerDateValue
     }
-    /*
-    func createTracker(title: String, categoryTitle: String, schedule: [Int]) {
-        let tracker = Tracker(id: UUID(),
-                              title: title,
-                              color: UIColor().randomColor(),
-                              emoji: emojis[Int.random(in: 0...emojis.count)],
-                              schedule: schedule)
-        
-        let newCategories = addNewCategory(toList: allCategories,
-                                           named: categoryTitle,
-                                           assignedTrackers: [tracker])
-        
-        allTrackers[tracker.id] = tracker
-        allCategories = newCategories
-        print("DEBUG PRINT! All categories: ", allCategories)
-        
-        NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"), object: nil)
-    }
-     */
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
@@ -416,6 +376,12 @@ extension TrackersListViewController: TrackerCellDelegate {
         var newRecordList = completedTrackers
         newRecordList.append(TrackerRecord(id: id, date: currentDatePickerDateValue))
         completedTrackers = newRecordList
+        
+        let tracker = try? trackerStore.getTracker(withID: id)
+        guard let tracker = tracker else {
+            return
+        }
+        recordStore.addNewRecord(forTrackerWithID: id, date: currentDatePickerDateValue, to: tracker)
     }
     func removeTrackerCompletionForSelectedDate(id: UUID) {
         let newRecordList = completedTrackers.filter {
@@ -424,6 +390,7 @@ extension TrackersListViewController: TrackerCellDelegate {
              !myCalendar.isDate($0.date, equalTo: currentDatePickerDateValue, toGranularity: .day))
         }
         completedTrackers = newRecordList
+        try? recordStore.deleteRecord(forTrackerWithID: id, date: currentDatePickerDateValue)
     }
 }
 
@@ -443,7 +410,7 @@ extension TrackersListViewController: UISearchControllerDelegate {
 }
 
 extension TrackersListViewController: TrackerStoreDelegate {
-    func store(_ store: TrackerStore, didUpdate update: TrackerStoreUpdate) {
+    func update() {
         allCategories = categoryStore.categories
         collectionView.reloadData()
     }

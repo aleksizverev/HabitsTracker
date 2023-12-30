@@ -37,4 +37,10 @@ final class ColorCell: UICollectionViewCell {
     func setColor(color: UIColor) {
         colorLabel.backgroundColor = color
     }
+    func getCellColor() -> UIColor {
+        guard let cellColor = colorLabel.backgroundColor else {
+            return .white
+        }
+        return cellColor
+    }
 }

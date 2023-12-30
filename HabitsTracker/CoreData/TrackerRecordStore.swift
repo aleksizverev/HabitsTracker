@@ -1,7 +1,13 @@
 import UIKit
 import CoreData
 
-final class TrackerRecordStore {
+enum TrackerRecordStoreErrors: Error {
+    case recordRetrievalError
+    case recordCastError
+    case recordDeletionError
+}
+
+final class TrackerRecordStore: NSObject {
     private let context: NSManagedObjectContext
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerRecordCoreData> = {
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
@@ -14,14 +20,14 @@ final class TrackerRecordStore {
     var records: [TrackerRecord] {
         guard
             let objects = fetchResultsController.fetchedObjects,
-            let records = try? objects.map({ try record(from: $0)})
+            let records = try? objects.map({ try record(from: $0) })
         else {
             return []
         }
         return records
     }
     
-    convenience init() {
+    convenience override init() {
         guard let delegate = (UIApplication.shared.delegate as? AppDelegate) else {
             fatalError("Unable to get context")
         }
@@ -31,23 +37,44 @@ final class TrackerRecordStore {
     
     init(context: NSManagedObjectContext) {
         self.context = context
+        super.init()
     }
     
     func addNewRecord(forTrackerWithID id: UUID, date: Date, to trackerCoreData: TrackerCoreData) {
         let newRecord = TrackerRecordCoreData(context: context)
-        newRecord.id = id
+        newRecord.trackerID = id
         newRecord.date = date
         trackerCoreData.addToRecord(newRecord)
         try? context.save()
     }
     
-    func record(from recordCoreData: TrackerRecordCoreData) -> TrackerRecord {
-        guard let trackerID = recordCoreData.id else {
-            fatalError("Unable to get tracker id")
+    func getRecord(forTrackerWithID id: UUID, date: Date) throws -> TrackerRecordCoreData {
+        let request = TrackerRecordCoreData.fetchRequest()
+        request.returnsObjectsAsFaults = false
+        request.predicate = NSPredicate(format: "%K == %@ AND %K == %@",
+                                        #keyPath(TrackerRecordCoreData.trackerID), id as CVarArg,
+                                        #keyPath(TrackerRecordCoreData.date), date as NSDate
+        )
+        let record = try? context.fetch(request)
+        guard let record = record?.first else {
+            throw CategoryStoreErrors.categoryRetrievalError
+        }
+        return record
+    }
+    
+    func deleteRecord(forTrackerWithID id: UUID, date: Date) throws {
+        let record = try getRecord(forTrackerWithID: id, date: date)
+        context.delete(record)
+        try? context.save()
+    }
+    
+    func record(from recordCoreData: TrackerRecordCoreData) throws -> TrackerRecord {
+        guard let trackerID = recordCoreData.trackerID else {
+            throw CategoryStoreErrors.cateryCastError
         }
         
         guard let recordDate = recordCoreData.date else {
-            fatalError("Unable to get record date")
+            throw CategoryStoreErrors.cateryCastError
         }
         
         return TrackerRecord(id: trackerID, date: recordDate)

@@ -3,11 +3,27 @@ import UIKit
 final class TrackerCreationViewController: UIViewController {
     private let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈"]
     private let colors: [UIColor] = [
-        .blue, .brown, .cyan, .green, .orange,
-        .red, .purple, .yellow, .darkGray, .gray,
-        .lightGray, .magenta, .systemIndigo, .systemBlue,
-        .systemTeal, .systemBrown, .black, .systemOrange
+        UIColor(named: "Color selection 1")!,
+        UIColor(named: "Color selection 2")!,
+        UIColor(named: "Color selection 3")!,
+        UIColor(named: "Color selection 4")!,
+        UIColor(named: "Color selection 5")!,
+        UIColor(named: "Color selection 6")!,
+        UIColor(named: "Color selection 7")!,
+        UIColor(named: "Color selection 8")!,
+        UIColor(named: "Color selection 9")!,
+        UIColor(named: "Color selection 10")!,
+        UIColor(named: "Color selection 11")!,
+        UIColor(named: "Color selection 12")!,
+        UIColor(named: "Color selection 13")!,
+        UIColor(named: "Color selection 14")!,
+        UIColor(named: "Color selection 15")!,
+        UIColor(named: "Color selection 16")!,
+        UIColor(named: "Color selection 17")!,
+        UIColor(named: "Color selection 18")!,
     ]
+    private var selectedColor: UIColor?
+    private var selectedEmoji: String?
     private var weekdaysNames = [
         1: "Mon",
         2: "Tue",
@@ -56,14 +72,6 @@ final class TrackerCreationViewController: UIViewController {
         
         return textField
     }()
-    private let creationButtonsStack: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .horizontal
-        stackView.distribution = .fillEqually
-        stackView.spacing = 8
-        return stackView
-    }()
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -90,6 +98,15 @@ final class TrackerCreationViewController: UIViewController {
         button.isEnabled = false
         button.addTarget(self, action: #selector(didTapCreationButton), for: .touchUpInside)
         return button
+    }()
+    
+    private let creationButtonsStack: UIStackView = {
+        let stackView = UIStackView()
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .horizontal
+        stackView.distribution = .fillEqually
+        stackView.spacing = 8
+        return stackView
     }()
     private let tableView: UITableView = {
         let tableView = UITableView()
@@ -132,6 +149,7 @@ final class TrackerCreationViewController: UIViewController {
         
         setupTableView()
         setupEmojisCollectionView()
+        setupColorsCollectionView()
         
         addSubviews()
         applyConstraints()
@@ -157,8 +175,8 @@ final class TrackerCreationViewController: UIViewController {
         
         let tracker = Tracker(id: UUID(),
                               title: trackerTitle,
-                              color: UIColor().randomColor(),
-                              emoji: emojis.randomElement() ?? "🚀",
+                              color: selectedColor ?? UIColor().randomColor(),
+                              emoji: selectedEmoji ?? "🏖️",
                               schedule: trackerSchedule)
         
         NotificationCenter.default.post(name: NSNotification.Name("CategoriesUpdateNotification"),
@@ -194,7 +212,8 @@ final class TrackerCreationViewController: UIViewController {
         emojisCollectionView.contentInset = UIEdgeInsets(top: 0, left: 3, bottom: 0, right: 3)
         emojisCollectionView.allowsMultipleSelection = false
         emojisCollectionView.isScrollEnabled = false
-        
+    }
+    private func setupColorsCollectionView() {
         colorsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         colorsCollectionView.dataSource = self
         colorsCollectionView.delegate = self
@@ -366,6 +385,7 @@ extension TrackerCreationViewController: UICollectionViewDelegate {
             guard let cell = collectionView.cellForItem(at: indexPath) as? EmojiCell else {
                 return
             }
+            selectedEmoji = cell.getCellEmoji()
             cell.didSelectEmoji()
         }
         if collectionView == colorsCollectionView {
@@ -377,6 +397,7 @@ extension TrackerCreationViewController: UICollectionViewDelegate {
             cell.layer.borderWidth = 3
             cell.layer.cornerRadius = 8
             cell.layer.masksToBounds = true
+            selectedColor = cell.getCellColor()
         }
     }
     
@@ -386,14 +407,14 @@ extension TrackerCreationViewController: UICollectionViewDelegate {
                 return
             }
             cell.didDeselectEmoji()
+            selectedEmoji = nil
         }
         if collectionView == colorsCollectionView {
-            if collectionView == colorsCollectionView {
-                guard let cell = collectionView.cellForItem(at: indexPath) as? ColorCell else {
-                    return
-                }
-                cell.layer.borderColor = UIColor.clear.cgColor
+            guard let cell = collectionView.cellForItem(at: indexPath) as? ColorCell else {
+                return
             }
+            cell.layer.borderColor = UIColor.clear.cgColor
+            selectedColor = nil
         }
     }
 }
