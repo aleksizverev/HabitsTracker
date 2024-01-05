@@ -1,29 +1,10 @@
 import UIKit
 
 final class TrackerCreationViewController: UIViewController {
-    private let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈"]
-    private let colors: [UIColor] = [
-        UIColor(named: "Color selection 1")!,
-        UIColor(named: "Color selection 2")!,
-        UIColor(named: "Color selection 3")!,
-        UIColor(named: "Color selection 4")!,
-        UIColor(named: "Color selection 5")!,
-        UIColor(named: "Color selection 6")!,
-        UIColor(named: "Color selection 7")!,
-        UIColor(named: "Color selection 8")!,
-        UIColor(named: "Color selection 9")!,
-        UIColor(named: "Color selection 10")!,
-        UIColor(named: "Color selection 11")!,
-        UIColor(named: "Color selection 12")!,
-        UIColor(named: "Color selection 13")!,
-        UIColor(named: "Color selection 14")!,
-        UIColor(named: "Color selection 15")!,
-        UIColor(named: "Color selection 16")!,
-        UIColor(named: "Color selection 17")!,
-        UIColor(named: "Color selection 18")!,
-    ]
     private var selectedColor: UIColor?
+    
     private var selectedEmoji: String?
+    
     private var weekdaysNames = [
         1: "Mon",
         2: "Tue",
@@ -35,17 +16,21 @@ final class TrackerCreationViewController: UIViewController {
     ]
     
     private var tableViewCellTitleData: [String] = ["Category", "Schedule"]
+    
     private var tableViewCellScheduleSubTitleData: String = ""
+    
     private var trackerSchedule: [Int] = [] {
         didSet {
             setupCreationButtonColor()
         }
     }
+    
     private var trackerTitle: String? {
         didSet {
             setupCreationButtonColor()
         }
     }
+    
     private var trackerCategory: String? {
         didSet {
             setupCreationButtonColor()
@@ -72,6 +57,7 @@ final class TrackerCreationViewController: UIViewController {
         
         return textField
     }()
+    
     private lazy var cancelButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -86,6 +72,7 @@ final class TrackerCreationViewController: UIViewController {
         button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         return button
     }()
+    
     private lazy var creationButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -108,6 +95,7 @@ final class TrackerCreationViewController: UIViewController {
         stackView.spacing = 8
         return stackView
     }()
+    
     private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -119,6 +107,7 @@ final class TrackerCreationViewController: UIViewController {
         tableView.separatorColor = UIColor(named: "YP Gray")
         return tableView
     }()
+    
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -127,6 +116,7 @@ final class TrackerCreationViewController: UIViewController {
         scrollView.isScrollEnabled = true
         return scrollView
     }()
+    
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -135,8 +125,10 @@ final class TrackerCreationViewController: UIViewController {
         stackView.alignment = .fill
         return stackView
     }()
+    
     private let emojisCollectionView = UICollectionView(frame: .zero,
                                                         collectionViewLayout: UICollectionViewFlowLayout())
+    
     private let colorsCollectionView = UICollectionView(frame: .zero,
                                                         collectionViewLayout: UICollectionViewFlowLayout())
     
@@ -159,12 +151,14 @@ final class TrackerCreationViewController: UIViewController {
     @objc private func didTapCancelButton() {
         self.dismiss(animated: true)
     }
+    
     @objc private func didTypeText(sender: UITextField) {
         guard let title = sender.text else {
             return
         }
         trackerTitle = title
     }
+    
     @objc private func didTapCreationButton() {
         guard let trackerTitle = trackerTitle else {
             return
@@ -186,6 +180,7 @@ final class TrackerCreationViewController: UIViewController {
         
         self.presentingViewController?.presentingViewController?.dismiss(animated: true)
     }
+    
     private func didTapScheduleButton() {
         view.endEditing(true)
         
@@ -194,6 +189,7 @@ final class TrackerCreationViewController: UIViewController {
         trackerScheduleVC.chosenSchedule = Set<Int>(trackerSchedule)
         present(UINavigationController(rootViewController: trackerScheduleVC), animated: true)
     }
+    
     private func didTapCategoryButton() {
         view.endEditing(true)
         let trackerCategoryVC = TrackerCategoryViewController()
@@ -213,6 +209,7 @@ final class TrackerCreationViewController: UIViewController {
         emojisCollectionView.allowsMultipleSelection = false
         emojisCollectionView.isScrollEnabled = false
     }
+    
     private func setupColorsCollectionView() {
         colorsCollectionView.translatesAutoresizingMaskIntoConstraints = false
         colorsCollectionView.dataSource = self
@@ -223,10 +220,12 @@ final class TrackerCreationViewController: UIViewController {
         colorsCollectionView.allowsMultipleSelection = false
         colorsCollectionView.isScrollEnabled = false
     }
+    
     private func setupTableView() {
         tableView.dataSource = self
         tableView.delegate = self
     }
+    
     private func setupCreationButtonColor() {
         if let trackerTitle = trackerTitle,
            let trackerCategory = trackerCategory,
@@ -238,27 +237,31 @@ final class TrackerCreationViewController: UIViewController {
         creationButton.backgroundColor = UIColor(named: "YP Gray")
         creationButton.isEnabled = false
     }
+    
     private func addSubviews() {
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
         
-        stackView.addArrangedSubview(trackerTitleField)
+        [
+            trackerTitleField,
+            tableView,
+            emojisCollectionView,
+            colorsCollectionView,
+            creationButtonsStack
+        ].forEach { view in
+            stackView.addArrangedSubview(view)
+        }
+        
+        [cancelButton, creationButton].forEach { view in
+            creationButtonsStack.addArrangedSubview(view)
+        }
+        
         stackView.setCustomSpacing(24, after: trackerTitleField)
-        
-        stackView.addArrangedSubview(tableView)
         stackView.setCustomSpacing(32, after: tableView)
-        
-        stackView.addArrangedSubview(emojisCollectionView)
         stackView.setCustomSpacing(16, after: emojisCollectionView)
-        
-        stackView.addArrangedSubview(colorsCollectionView)
         stackView.setCustomSpacing(16, after: colorsCollectionView)
-        
-        stackView.addArrangedSubview(creationButtonsStack)
-        
-        creationButtonsStack.addArrangedSubview(cancelButton)
-        creationButtonsStack.addArrangedSubview(creationButton)
     }
+    
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -277,7 +280,7 @@ final class TrackerCreationViewController: UIViewController {
             tableView.heightAnchor.constraint(equalToConstant: Constants.defaultTableViewHeight),
             
             emojisCollectionView.heightAnchor.constraint(equalToConstant: Constants.defaultCollectionViewHeight),
-    
+            
             colorsCollectionView.heightAnchor.constraint(equalToConstant: Constants.defaultCollectionViewHeight),
             
             creationButtonsStack.heightAnchor.constraint(equalToConstant: Constants.defaultStackElementHeight),
@@ -392,7 +395,7 @@ extension TrackerCreationViewController: UICollectionViewDelegate {
             guard let cell = collectionView.cellForItem(at: indexPath) as? ColorCell else {
                 return
             }
-            let cellColor = colors[indexPath.row].withAlphaComponent(0.3).cgColor
+            let cellColor = habitColors[indexPath.row].withAlphaComponent(0.3).cgColor
             cell.layer.borderColor = cellColor
             cell.layer.borderWidth = 3
             cell.layer.cornerRadius = 8
@@ -423,10 +426,10 @@ extension TrackerCreationViewController: UICollectionViewDelegate {
 extension TrackerCreationViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == emojisCollectionView {
-            return emojis.count
+            return habitEmojis.count
         }
         if collectionView == colorsCollectionView {
-            return colors.count
+            return habitColors.count
         }
         return 0
     }
@@ -438,7 +441,7 @@ extension TrackerCreationViewController: UICollectionViewDataSource {
                 for: indexPath) as? EmojiCell else {
                 return EmojiCell()
             }
-            cell.setEmoji(emoji: emojis[indexPath.row])
+            cell.setEmoji(emoji: habitEmojis[indexPath.row])
             return cell
         }
         if collectionView == colorsCollectionView {
@@ -447,7 +450,7 @@ extension TrackerCreationViewController: UICollectionViewDataSource {
                 for: indexPath) as? ColorCell else {
                 return ColorCell()
             }
-            cell.setColor(color: colors[indexPath.row])
+            cell.setColor(color: habitColors[indexPath.row])
             return cell
         }
         return UICollectionViewCell()

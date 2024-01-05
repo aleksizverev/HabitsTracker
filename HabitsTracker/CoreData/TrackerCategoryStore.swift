@@ -3,11 +3,12 @@ import CoreData
 
 enum CategoryStoreErrors: Error {
     case categoryRetrievalError
-    case cateryCastError
+    case categoryTitleError
 }
 
 final class TrackerCategoryStore: NSObject {
     private let context: NSManagedObjectContext
+    
     private let uiColorMarshalling = UIColorMarshalling()
     
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
@@ -60,7 +61,7 @@ final class TrackerCategoryStore: NSObject {
     
     func category(from categoryCoreData: TrackerCategoryCoreData) throws -> TrackerCategory {
         guard let categoryTitle = categoryCoreData.title else {
-            throw CategoryStoreErrors.cateryCastError
+            throw CategoryStoreErrors.categoryTitleError
         }
         
         guard let trackers = categoryCoreData.tracker else {
@@ -70,18 +71,13 @@ final class TrackerCategoryStore: NSObject {
         
         var assignedTrackers: [Tracker] = []
         try? trackers.forEach { tracker in
-            guard let tracker = tracker as? TrackerCoreData else {
-                throw TrackerStorageErrors.trackerCastError
-            }
-            guard
-                let id = tracker.trackerID,
-                let title = tracker.title,
-                let color = tracker.color,
-                let emoji = tracker.emoji,
-                let schedule = tracker.schedule
-            else {
-                throw TrackerStorageErrors.trackerRetrievalError
-            }
+            guard let tracker = tracker as? TrackerCoreData else { throw TrackerStorageErrors.trackerCastError }
+            guard let id = tracker.trackerID else { throw TrackerStorageErrors.trackerIDError }
+            guard let title = tracker.title else { throw TrackerStorageErrors.trackerTitleError }
+            guard let color = tracker.color else { throw TrackerStorageErrors.trackerColorError }
+            guard let emoji = tracker.emoji else { throw TrackerStorageErrors.trackerEmojiError }
+            guard let schedule = tracker.schedule else { throw TrackerStorageErrors.trackerScheduleError }
+            
             assignedTrackers.append(Tracker(id: id,
                                             title: title,
                                             color: uiColorMarshalling.color(from: color),

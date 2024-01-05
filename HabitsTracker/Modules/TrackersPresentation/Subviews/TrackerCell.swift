@@ -13,13 +13,17 @@ final class TrackerCell: UICollectionViewCell {
             updateHabitStatisticsLabelDays()
         }
     }
+    
     private var isCompletedToday: Bool = false {
         didSet {
             updateCompletionButtonState()
         }
     }
+    
     private var isAllowedToBeCompletedToday: Bool = false
+    
     private var trackerId: UUID = UUID()
+    
     private var cellDescriptionView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -28,6 +32,7 @@ final class TrackerCell: UICollectionViewCell {
         
         return view
     }()
+    
     private var habitDescriptionLabel: UILabel = {
         var label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -41,12 +46,14 @@ final class TrackerCell: UICollectionViewCell {
         
         return label
     }()
+    
     private var emojiLabel: UILabel = {
         var label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         return label
     }()
+    
     private var statisticsLabel: UILabel = {
         var label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -55,6 +62,7 @@ final class TrackerCell: UICollectionViewCell {
         label.text = "0 days"
         return label
     }()
+    
     private lazy var completionButton: UIButton = {
         let button = UIButton.systemButton(
             with: UIImage(systemName: "plus") ?? UIImage(),
@@ -71,6 +79,7 @@ final class TrackerCell: UICollectionViewCell {
         addSubviews()
         applyConstraints()
     }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -90,6 +99,7 @@ final class TrackerCell: UICollectionViewCell {
             delegate?.removeTrackerCompletionForSelectedDate(id: trackerId)
         }
     }
+    
     private func addSubviews() {
         contentView.addSubview(cellDescriptionView)
         contentView.addSubview(statisticsLabel)
@@ -98,6 +108,7 @@ final class TrackerCell: UICollectionViewCell {
         cellDescriptionView.addSubview(habitDescriptionLabel)
         cellDescriptionView.addSubview(emojiLabel)
     }
+    
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             
@@ -121,11 +132,13 @@ final class TrackerCell: UICollectionViewCell {
             completionButton.centerYAnchor.constraint(equalTo: statisticsLabel.centerYAnchor)
         ])
     }
+    
     private func updateHabitStatisticsLabelDays() {
         statisticsLabel.text = completionCounter == 1
         ? String(completionCounter) + " day"
         : String(completionCounter) + " days"
     }
+    
     private func updateCompletionButtonState() {
         if isCompletedToday {
             completionButton.setImage(UIImage(systemName: "checkmark"), for: .normal)

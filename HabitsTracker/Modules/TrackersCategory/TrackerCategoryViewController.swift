@@ -8,6 +8,7 @@ final class TrackerCategoryViewController: UIViewController {
     weak var delegate: TrackerCategoryViewControllerDelegate?
     
     private var availableCategories: [String] = ["Important", "Not so important"]
+    
     private var chosenCategory: String?
     
     private var tableView: UITableView = {

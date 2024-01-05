@@ -25,6 +25,7 @@ final class ColorCell: UICollectionViewCell {
     private func addSubviews() {
         contentView.addSubview(colorLabel)
     }
+    
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             colorLabel.heightAnchor.constraint(equalToConstant: 40),
@@ -37,6 +38,7 @@ final class ColorCell: UICollectionViewCell {
     func setColor(color: UIColor) {
         colorLabel.backgroundColor = color
     }
+    
     func getCellColor() -> UIColor {
         guard let cellColor = colorLabel.backgroundColor else {
             return .white

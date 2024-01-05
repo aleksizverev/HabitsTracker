@@ -5,10 +5,13 @@ enum TrackerRecordStoreErrors: Error {
     case recordRetrievalError
     case recordCastError
     case recordDeletionError
+    case recordDateError
+    case recordTrackerIDError
 }
 
 final class TrackerRecordStore: NSObject {
     private let context: NSManagedObjectContext
+    
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerRecordCoreData> = {
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
@@ -70,11 +73,11 @@ final class TrackerRecordStore: NSObject {
     
     func record(from recordCoreData: TrackerRecordCoreData) throws -> TrackerRecord {
         guard let trackerID = recordCoreData.trackerID else {
-            throw CategoryStoreErrors.cateryCastError
+            throw TrackerRecordStoreErrors.recordTrackerIDError
         }
         
         guard let recordDate = recordCoreData.date else {
-            throw CategoryStoreErrors.cateryCastError
+            throw TrackerRecordStoreErrors.recordDateError
         }
         
         return TrackerRecord(id: trackerID, date: recordDate)

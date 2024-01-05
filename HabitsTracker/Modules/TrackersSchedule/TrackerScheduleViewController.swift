@@ -19,6 +19,7 @@ final class TrackerScheduleViewController: UIViewController {
     var chosenSchedule: Set<Int> = []
     
     private var newSchedule: Set<Int> = []
+    
     private lazy var doneButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -31,6 +32,7 @@ final class TrackerScheduleViewController: UIViewController {
         button.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
         return button
     }()
+    
     private var tableView: UITableView = {
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -62,6 +64,7 @@ final class TrackerScheduleViewController: UIViewController {
         delegate?.addSchedule(schedule: newSchedule.sorted())
         self.dismiss(animated: true)
     }
+    
     @objc private func onSwitchValueChanged(sender: UISwitch) {
         let tag = sender.tag
         switch sender.isOn {
@@ -80,6 +83,7 @@ final class TrackerScheduleViewController: UIViewController {
         view.addSubview(doneButton)
         view.addSubview(tableView)
     }
+    
     private func applyConstraints() {
         
         NSLayoutConstraint.activate([

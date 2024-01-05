@@ -4,28 +4,38 @@ final class TrackersListViewController: UIViewController {
     
     // MARK: - Stores
     let categoryStore = TrackerCategoryStore()
+    
     let trackerStore = TrackerStore()
+    
     let recordStore = TrackerRecordStore()
     
     // MARK: - LogicVariables
     let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
     
     private var allCategories: [TrackerCategory] = []
+    
     private var visibleCategories: [TrackerCategory] = []
+    
     private var completedTrackers: [TrackerRecord] = []
+    
     private lazy var currentDatePickerDateValue: Date = myCalendar.startOfDay(for: Date())
+    
     private lazy var currentDayNumber: Int = getCurrentDayNaumber(date: currentDatePickerDateValue)
+    
     private let myCalendar = Calendar(identifier: .gregorian)
     
     // MARK: - UIVariables
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    
     private var searchController = UISearchController()
+    
     private var staticView: UIView = {
         let staticView = UIView()
         staticView.translatesAutoresizingMaskIntoConstraints = false
         staticView.backgroundColor = .white
         return staticView
     }()
+    
     private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView()
         let image = UIImage(named: "TrackersListPlaceholder")
@@ -34,6 +44,7 @@ final class TrackersListViewController: UIViewController {
         imageView.isHidden = true
         return imageView
     }()
+    
     private lazy var placeholderText: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -103,6 +114,7 @@ final class TrackersListViewController: UIViewController {
         self.navigationItem.leftBarButtonItem = plusButton
         self.navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: -12, bottom: 0, right: 0)
     }
+    
     private func setupCollectionView() {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.dataSource = self
@@ -111,20 +123,24 @@ final class TrackersListViewController: UIViewController {
         collectionView.register(TrackersCollectionViewSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "header")
         collectionView.contentInset = UIEdgeInsets(top: 6, left: 16, bottom: 24, right: 16)
     }
+    
     private func showEmptyScreen() {
         placeholderImageView.isHidden = false
         placeholderText.isHidden = false
     }
+    
     private func hideEmptyScreen() {
         placeholderImageView.isHidden = true
         placeholderText.isHidden = true
     }
+    
     private func addSubviews() {
         view.addSubview(staticView)
         view.addSubview(collectionView)
         view.addSubview(placeholderImageView)
         view.addSubview(placeholderText)
     }
+    
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             placeholderImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -150,12 +166,14 @@ final class TrackersListViewController: UIViewController {
         let trackertypeChoiceVC = UINavigationController(rootViewController: TrackerTypeChoiceViewController())
         present(trackertypeChoiceVC, animated: true)
     }
+    
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let senderDate = sender.date
         currentDatePickerDateValue = myCalendar.startOfDay(for: senderDate)
         currentDayNumber = getCurrentDayNaumber(date: senderDate)
         updateVisibleCategories()
     }
+    
     @objc func handleNotification(_ notification: Notification) {
         if let userData = notification.userInfo,
            let tracker = userData["Tracker"] as? Tracker,
@@ -184,6 +202,7 @@ final class TrackersListViewController: UIViewController {
         }
         collectionView.reloadData()
     }
+    
     private func updateVisibleCategories() {
         guard
             let searchQuery = searchController.searchBar.text?.lowercased(),
@@ -206,6 +225,7 @@ final class TrackersListViewController: UIViewController {
         visibleCategories = filteredCategories
         collectionView.reloadData()
     }
+    
     private func addNewCategory(toList oldCategoriesList: [TrackerCategory],
                                 named categoryName: String,
                                 assignedTrackers trackers: [Tracker]?) -> [TrackerCategory] {
@@ -239,9 +259,11 @@ final class TrackersListViewController: UIViewController {
         newCategoriesList.append(category)
         return newCategoriesList
     }
+    
     private func getRecordsForTracker(withId id: UUID) -> [TrackerRecord] {
         completedTrackers.filter { $0.id == id }
     }
+    
     private func getCurrentDayNaumber(date: Date) -> Int {
         var weekDay = myCalendar.component(.weekday, from: date)
         weekDay -= 1
@@ -251,11 +273,13 @@ final class TrackersListViewController: UIViewController {
         }
         return weekDay
     }
+    
     private func isTrackerCompletedToday(withID id: UUID) -> Bool {
         getRecordsForTracker(withId: id).contains {
             myCalendar.isDate($0.date, equalTo: currentDatePickerDateValue, toGranularity: .day)
         }
     }
+    
     private func isAllowedToBeCompletedToday() -> Bool {
         Date() >= currentDatePickerDateValue
     }
@@ -383,6 +407,7 @@ extension TrackersListViewController: TrackerCellDelegate {
         }
         recordStore.addNewRecord(forTrackerWithID: id, date: currentDatePickerDateValue, to: tracker)
     }
+    
     func removeTrackerCompletionForSelectedDate(id: UUID) {
         let newRecordList = completedTrackers.filter {
             ($0.id != id) ||

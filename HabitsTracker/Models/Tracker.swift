@@ -8,7 +8,6 @@ struct Tracker: Hashable {
     let schedule: [Int]
     
     func isScheduledForDayNumber(_ dayNum: Int) -> Bool {
-        print("SCHEDULE", schedule, "contains: ", dayNum)
         return schedule.contains(dayNum)
     }
 }

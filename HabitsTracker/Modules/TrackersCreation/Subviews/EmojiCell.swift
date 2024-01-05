@@ -8,6 +8,7 @@ final class EmojiCell: UICollectionViewCell {
         subView.layer.masksToBounds = true
         return subView
     }()
+    
     private var emojiLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -29,6 +30,7 @@ final class EmojiCell: UICollectionViewCell {
         contentView.addSubview(subView)
         subView.addSubview(emojiLabel)
     }
+    
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             subView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -44,12 +46,15 @@ final class EmojiCell: UICollectionViewCell {
     func setEmoji(emoji: String) {
         emojiLabel.text = emoji
     }
+    
     func didSelectEmoji() {
         subView.backgroundColor = UIColor(named: "YP Background")
     }
+    
     func didDeselectEmoji() {
         subView.backgroundColor = .clear
     }
+    
     func getCellEmoji() -> String {
         guard let emoji = emojiLabel.text else {
             return ""

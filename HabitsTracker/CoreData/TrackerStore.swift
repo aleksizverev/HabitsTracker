@@ -3,8 +3,12 @@ import CoreData
 
 enum TrackerStorageErrors: Error {
     case getTrackerByIDError
-    case trackerRetrievalError
     case trackerCastError
+    case trackerIDError
+    case trackerTitleError
+    case trackerColorError
+    case trackerEmojiError
+    case trackerScheduleError
 }
 
 protocol TrackerStoreDelegate: AnyObject {
@@ -13,6 +17,7 @@ protocol TrackerStoreDelegate: AnyObject {
 
 final class TrackerStore: NSObject {
     private let context: NSManagedObjectContext
+    
     private let uiColorMarshalling = UIColorMarshalling()
     
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerCoreData> = {
@@ -57,15 +62,11 @@ final class TrackerStore: NSObject {
     }
     
     func tracker(from tracker: TrackerCoreData) throws -> Tracker {
-        guard
-            let id = tracker.trackerID,
-            let title = tracker.title,
-            let color = tracker.color,
-            let emoji = tracker.emoji,
-            let schedule = tracker.schedule
-        else {
-            throw TrackerStorageErrors.trackerRetrievalError
-        }
+        guard let id = tracker.trackerID else { throw TrackerStorageErrors.trackerIDError }
+        guard let title = tracker.title else { throw TrackerStorageErrors.trackerTitleError }
+        guard let color = tracker.color else { throw TrackerStorageErrors.trackerColorError }
+        guard let emoji = tracker.emoji else { throw TrackerStorageErrors.trackerEmojiError }
+        guard let schedule = tracker.schedule else { throw TrackerStorageErrors.trackerScheduleError }
             
         return Tracker(id: id,
                        title: title,

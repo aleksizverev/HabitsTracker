@@ -9,6 +9,7 @@ final class TrackerTypeChoiceViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
     private lazy var habitButton: UIButton = {
         let button = UIButton()
         button.setTitle("Habit", for: .normal)
@@ -21,6 +22,7 @@ final class TrackerTypeChoiceViewController: UIViewController {
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
+    
     private lazy var irregularEventButton: UIButton = {
         let button = UIButton()
         button.setTitle("Irregular event", for: .normal)
@@ -34,6 +36,7 @@ final class TrackerTypeChoiceViewController: UIViewController {
                          for: .touchUpInside)
         return button
     }()
+    
     private var stackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
@@ -57,16 +60,19 @@ final class TrackerTypeChoiceViewController: UIViewController {
             rootViewController: TrackerCreationViewController())
         present(trackerCreationVC, animated: true)
     }
+    
     @objc private func didTapIrregularTrackerCreationButton() {
         let irregularTrackerCreationVC = UINavigationController(
             rootViewController: IrregularTrackerCreationViewController())
         present(irregularTrackerCreationVC, animated: true)
     }
+    
     private func addSubviews() {
         view.addSubview(stackView)
         stackView.addArrangedSubview(habitButton)
         stackView.addArrangedSubview(irregularEventButton)
     }
+    
     private func applyConstraints() {
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
