@@ -51,6 +51,7 @@ final class TrackerCategoryStore: NSObject {
     init(context: NSManagedObjectContext) {
         self.context = context
         super.init()
+        
         fetchResultsController.delegate = self
     }
     
@@ -99,16 +100,6 @@ final class TrackerCategoryStore: NSObject {
     func createNewCategory(withTitle title: String) {
         let newCategory = TrackerCategoryCoreData(context: context)
         newCategory.title = title
-        try? context.save()
-    }
-    
-    func setupCategoryDataBase() {
-        let tmpCategory1 = TrackerCategoryCoreData(context: context)
-        tmpCategory1.title = "Important"
-        
-        let tmpCategory2 = TrackerCategoryCoreData(context: context)
-        tmpCategory2.title = "Not so important"
-        
         try? context.save()
     }
 }

@@ -2,13 +2,15 @@ import UIKit
 
 final class TrackerCategoryViewModel {
     
-    var onChange: (() -> Void)?
+    var onCategoriesListChange: (() -> Void)?
+    var onCategoryCreationButtonTap: (() -> Void)?
+    var onCategoryChoiceButtonTap: (() -> Void)?
     
     private let categoryStore: TrackerCategoryStore
     
     private(set) var availableCategories: [String] = [] {
         didSet {
-            onChange?()
+            onCategoriesListChange?()
         }
     }
     
@@ -20,6 +22,14 @@ final class TrackerCategoryViewModel {
     
     func addNewCategory(category: String) {
         categoryStore.createNewCategory(withTitle: category)
+    }
+    
+    func didTapCreationButton() {
+        onCategoryCreationButtonTap?()
+    }
+    
+    func didSelectCategory() {
+        onCategoryChoiceButtonTap?()
     }
     
     private func getAvailableCategories() -> [String] {

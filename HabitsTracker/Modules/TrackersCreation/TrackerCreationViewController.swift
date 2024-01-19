@@ -194,7 +194,6 @@ final class TrackerCreationViewController: UIViewController {
         view.endEditing(true)
         let trackerCategoryVC = TrackerCategoryViewController()
         trackerCategoryVC.delegate = self
-        trackerCategoryVC.setChosenCategory(category: trackerCategory)
         present(UINavigationController(rootViewController: trackerCategoryVC), animated: true)
     }
     

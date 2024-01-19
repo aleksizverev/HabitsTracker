@@ -229,10 +229,6 @@ final class TrackersListViewController: UIViewController {
     private func addNewCategory(toList oldCategoriesList: [TrackerCategory],
                                 named categoryName: String,
                                 assignedTrackers trackers: [Tracker]?) -> [TrackerCategory] {
-        /*
-         If category already exists, then we don't need to create a new one. We have to check the list
-         of trackers and update it(if it's empty). Otherwise, do nothing.
-         */
         var newTrackersList: [Tracker] = []
         oldCategoriesList.forEach { existingCategory in
             if existingCategory.title == categoryName {
@@ -243,13 +239,8 @@ final class TrackersListViewController: UIViewController {
             newTrackersList.append(contentsOf: trackers)
         }
         
-        /* Creates new category */
         let category = TrackerCategory(title: categoryName, assignedTrackers: newTrackersList)
         
-        /*
-         Creates new category list. First, adds all categories which name is not the same as new one.
-         After all, adds new/update category
-         */
         var newCategoriesList: [TrackerCategory] = []
         oldCategoriesList.forEach { existingCategory in
             if existingCategory.title != categoryName {

@@ -61,7 +61,19 @@ final class TrackerCategoryViewController: UIViewController {
         view.backgroundColor = .white
         
         viewModel = TrackerCategoryViewModel(categoryStore: TrackerCategoryStore())
-        viewModel.onChange = tableView.reloadData
+        viewModel.onCategoriesListChange = tableView.reloadData
+        viewModel.onCategoryCreationButtonTap = { [weak self] in
+            let categoryCreationVC = TrackerCategoryCreationViewController()
+            categoryCreationVC.delegate = self
+            
+            guard let self = self else { return }
+            self.present(UINavigationController(rootViewController: categoryCreationVC), animated: true)
+        }
+        viewModel.onCategoryChoiceButtonTap = { [weak self] in
+            guard let self = self else { return }
+            delegate?.addCategory(category: chosenCategory)
+            self.dismiss(animated: true)
+        }
         
         setupEmptyScreen()
         setupCreationButton()
@@ -70,14 +82,11 @@ final class TrackerCategoryViewController: UIViewController {
     
     // MARK: Objc methods
     @objc private func didTapCategoryCreationButton() {
-        let categoryCreationVC = TrackerCategoryCreationViewController()
-        categoryCreationVC.delegate = self
-        present(UINavigationController(rootViewController: categoryCreationVC), animated: true)
+        viewModel.didTapCreationButton()
     }
     
     @objc private func didTapCategoryButton() {
-        delegate?.addCategory(category: chosenCategory)
-        self.dismiss(animated: true)
+        viewModel.didSelectCategory()
     }
     
     // MARK: Setup methods
@@ -132,10 +141,6 @@ final class TrackerCategoryViewController: UIViewController {
     }
     
     // MARK: Update methods
-    func setChosenCategory(category: String?) {
-        chosenCategory = category
-    }
-    
     func updateTableView() {
         tableView.reloadData()
     }
