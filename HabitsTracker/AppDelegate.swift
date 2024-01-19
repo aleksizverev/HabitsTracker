@@ -1,10 +1,3 @@
-//
-//  AppDelegate.swift
-//  HabitsTracker
-//
-//  Created by Alexei Zverev on 18.10.2023.
-//
-
 import UIKit
 import CoreData
 
@@ -16,7 +9,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         window = UIWindow()
-        window?.rootViewController = SplashScreenViewController()
+        window?.rootViewController = OnboardingViewController(
+            transitionStyle: .scroll,
+            navigationOrientation: .horizontal
+        )
         window?.makeKeyAndVisible()
         
         return true

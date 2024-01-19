@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		17142ACF2B24E66600AD195C /* TrackerCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17142ACE2B24E66600AD195C /* TrackerCategoryViewController.swift */; };
 		17142AD32B27228C00AD195C /* IrregularTrackerCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17142AD22B27228C00AD195C /* IrregularTrackerCreationViewController.swift */; };
+		171FA5FD2B5AF4010094397C /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171FA5FC2B5AF4010094397C /* OnboardingViewController.swift */; };
+		171FA5FF2B5B00DC0094397C /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171FA5FE2B5B00DC0094397C /* PageViewController.swift */; };
 		173423182B1F4223003DE074 /* UITextField+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173423172B1F4223003DE074 /* UITextField+Extensions.swift */; };
 		1734231A2B1F4838003DE074 /* TrackerScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173423192B1F4838003DE074 /* TrackerScheduleViewController.swift */; };
 		1734231C2B2089AA003DE074 /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734231B2B2089AA003DE074 /* ScheduleCell.swift */; };
@@ -47,6 +49,8 @@
 /* Begin PBXFileReference section */
 		17142ACE2B24E66600AD195C /* TrackerCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryViewController.swift; sourceTree = "<group>"; };
 		17142AD22B27228C00AD195C /* IrregularTrackerCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrregularTrackerCreationViewController.swift; sourceTree = "<group>"; };
+		171FA5FC2B5AF4010094397C /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
+		171FA5FE2B5B00DC0094397C /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		173423172B1F4223003DE074 /* UITextField+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extensions.swift"; sourceTree = "<group>"; };
 		173423192B1F4838003DE074 /* TrackerScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerScheduleViewController.swift; sourceTree = "<group>"; };
 		1734231B2B2089AA003DE074 /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
@@ -95,6 +99,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		171FA5FB2B5AF3E30094397C /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				171FA5FC2B5AF4010094397C /* OnboardingViewController.swift */,
+				171FA5FE2B5B00DC0094397C /* PageViewController.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		173423162B1F420E003DE074 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -224,6 +237,7 @@
 		17C23B002AE275BF003148BF /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				171FA5FB2B5AF3E30094397C /* Onboarding */,
 				174A0C8F2B286077009F9EF2 /* Navigation */,
 				174A0C8E2B28605A009F9EF2 /* UserStatistics */,
 				17C23B042AE3FC37003148BF /* TrackersPresentation */,
@@ -403,6 +417,8 @@
 				17C23AFF2AE275B8003148BF /* TrackerCell.swift in Sources */,
 				17B8E7802AE04AFD00875EE0 /* TrackersViewController.swift in Sources */,
 				17A5B2832B3ACBDD000BB8E2 /* UIColorMarshalling.swift in Sources */,
+				171FA5FD2B5AF4010094397C /* OnboardingViewController.swift in Sources */,
+				171FA5FF2B5B00DC0094397C /* PageViewController.swift in Sources */,
 				17B8E77A2AE04AB700875EE0 /* SplashScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
