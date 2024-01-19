@@ -71,7 +71,7 @@ final class TrackersListViewController: UIViewController {
         
         setupNavBar()
         setupCollectionView()
-        categoryStore.setupCategoryDataBase()
+//        categoryStore.setupCategoryDataBase()
         
         completedTrackers = recordStore.records
         allCategories = categoryStore.categories

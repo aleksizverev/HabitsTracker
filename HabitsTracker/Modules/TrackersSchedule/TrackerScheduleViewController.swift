@@ -110,7 +110,7 @@ extension TrackerScheduleViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ScheduleCell",
                                                        for: indexPath) as? ScheduleCell
         else {
-            return ScheduleCell()
+            return UITableViewCell()
         }
         
         cell.setupScheduleCell(labelText: String(describing: Weekdays.allCases[indexPath.row]),

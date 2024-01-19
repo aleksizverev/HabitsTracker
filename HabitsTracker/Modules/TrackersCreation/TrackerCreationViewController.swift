@@ -21,19 +21,19 @@ final class TrackerCreationViewController: UIViewController {
     
     private var trackerSchedule: [Int] = [] {
         didSet {
-            setupCreationButtonColor()
+            setupCreationButtonState()
         }
     }
     
     private var trackerTitle: String? {
         didSet {
-            setupCreationButtonColor()
+            setupCreationButtonState()
         }
     }
     
     private var trackerCategory: String? {
         didSet {
-            setupCreationButtonColor()
+            setupCreationButtonState()
         }
     }
     
@@ -226,7 +226,7 @@ final class TrackerCreationViewController: UIViewController {
         tableView.delegate = self
     }
     
-    private func setupCreationButtonColor() {
+    private func setupCreationButtonState() {
         if let trackerTitle = trackerTitle,
            let trackerCategory = trackerCategory,
            !trackerTitle.isEmpty && !trackerSchedule.isEmpty && !trackerCategory.isEmpty {
@@ -275,7 +275,7 @@ final class TrackerCreationViewController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             stackView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
             
-            trackerTitleField.heightAnchor.constraint(equalToConstant: Constants.defaultStackElementHeight),
+            trackerTitleField.heightAnchor.constraint(equalToConstant: Constants.defaultCellHeight),
             
             tableView.heightAnchor.constraint(equalToConstant: Constants.defaultTableViewHeight),
             
