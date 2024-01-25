@@ -5,11 +5,8 @@ protocol TrackerCategoryViewControllerDelegate: AnyObject {
 }
 
 final class TrackerCategoryViewController: UIViewController {
-    weak var delegate: TrackerCategoryViewControllerDelegate?
     
-    private var viewModel: TrackerCategoryViewModel!
-    
-    private var chosenCategory: String?
+    private var viewModel: TrackerCategoryViewModelProtocol
     
     private var tableView: UITableView = {
         let tableView = UITableView()
@@ -55,12 +52,20 @@ final class TrackerCategoryViewController: UIViewController {
         return label
     }()
     
+    init(viewModel: TrackerCategoryViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.title = "Category"
         view.backgroundColor = .white
         
-        viewModel = TrackerCategoryViewModel(categoryStore: TrackerCategoryStore())
         viewModel.onCategoriesListChange = tableView.reloadData
         viewModel.onCategoryCreationButtonTap = { [weak self] in
             let categoryCreationVC = TrackerCategoryCreationViewController()
@@ -71,7 +76,6 @@ final class TrackerCategoryViewController: UIViewController {
         }
         viewModel.onCategoryChoiceButtonTap = { [weak self] in
             guard let self = self else { return }
-            delegate?.addCategory(category: chosenCategory)
             self.dismiss(animated: true)
         }
         
@@ -83,10 +87,6 @@ final class TrackerCategoryViewController: UIViewController {
     // MARK: Objc methods
     @objc private func didTapCategoryCreationButton() {
         viewModel.didTapCreationButton()
-    }
-    
-    @objc private func didTapCategoryButton() {
-        viewModel.didSelectCategory()
     }
     
     // MARK: Setup methods
@@ -166,6 +166,13 @@ extension TrackerCategoryViewController: UITableViewDataSource {
         }
         cell.setupCategoryCell(labelText: viewModel.availableCategories[indexPath.row])
         cell.selectionStyle = .none
+        
+        if let chosenCategory = viewModel.getChosenCategory(),
+           chosenCategory == viewModel.availableCategories[indexPath.row] {
+            cell.accessoryType = .checkmark
+            cell.setSelected(true, animated: true)
+        }
+        
         return cell
     }
 }
@@ -173,11 +180,11 @@ extension TrackerCategoryViewController: UITableViewDataSource {
 // MARK: UITableViewDelegate
 extension TrackerCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        chosenCategory = viewModel.availableCategories[indexPath.row]
+        viewModel.setChosenCategory(withTitle: viewModel.availableCategories[indexPath.row])
         if let cell = tableView.cellForRow(at: indexPath) {
             cell.accessoryType = .checkmark
         }
-        self.didTapCategoryButton()
+        viewModel.didSelectCategory()
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {

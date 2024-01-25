@@ -168,8 +168,12 @@ final class IrregularTrackerCreationViewController: UIViewController {
     
     private func didTapCategoryButton() {
         view.endEditing(true)
-        let trackerCategoryVC = TrackerCategoryViewController()
-        trackerCategoryVC.delegate = self
+        let viewModel = TrackerCategoryViewModel(categoryStore: TrackerCategoryStore())
+        viewModel.delegate = self
+        if let trackerCategory = trackerCategory {
+            viewModel.setChosenCategory(withTitle: trackerCategory)
+        }
+        let trackerCategoryVC = TrackerCategoryViewController(viewModel: viewModel)
         present(UINavigationController(rootViewController: trackerCategoryVC), animated: true)
     }
     

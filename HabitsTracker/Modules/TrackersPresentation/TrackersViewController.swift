@@ -38,9 +38,8 @@ final class TrackersListViewController: UIViewController {
     
     private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView()
-        let image = UIImage(named: "TrackersListPlaceholder")
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.image = image
+        imageView.image = UIImage()
         imageView.isHidden = true
         return imageView
     }()
@@ -48,7 +47,6 @@ final class TrackersListViewController: UIViewController {
     private lazy var placeholderText: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "What shall we track?"
         label.textColor = UIColor(named: "YP Black")
         label.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.medium)
         label.textAlignment = .center
@@ -71,7 +69,6 @@ final class TrackersListViewController: UIViewController {
         
         setupNavBar()
         setupCollectionView()
-//        categoryStore.setupCategoryDataBase()
         
         completedTrackers = recordStore.records
         allCategories = categoryStore.categories
@@ -125,11 +122,25 @@ final class TrackersListViewController: UIViewController {
     }
     
     private func showEmptyScreen() {
+        placeholderImageView.image = UIImage(named: "TrackersListPlaceholder")
+        placeholderText.text = "What shall we track?"
         placeholderImageView.isHidden = false
         placeholderText.isHidden = false
     }
     
     private func hideEmptyScreen() {
+        placeholderImageView.isHidden = true
+        placeholderText.isHidden = true
+    }
+    
+    private func showNoSearchResultsScreen() {
+        placeholderImageView.image = UIImage(named: "NoSearchResults")
+        placeholderText.text = "Nothing found"
+        placeholderImageView.isHidden = false
+        placeholderText.isHidden = false
+    }
+    
+    private func hideNoSearchResultsScreen() {
         placeholderImageView.isHidden = true
         placeholderText.isHidden = true
     }
@@ -331,19 +342,32 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
 // MARK: - UICollectionViewDataSource
 extension TrackersListViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        if visibleCategories.isEmpty {
-            showEmptyScreen()
+        if !visibleCategories.isEmpty {
+            hideNoSearchResultsScreen()
+            hideEmptyScreen()
+            return visibleCategories.count
+        }
+        
+        if let searchQuery = searchController.searchBar.text?.lowercased(),
+           !searchQuery.isEmpty {
+            showNoSearchResultsScreen()
             return 1
         }
-        hideEmptyScreen()
-        return visibleCategories.count
+        showEmptyScreen()
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
         if !visibleCategories.isEmpty {
+            hideNoSearchResultsScreen()
             hideEmptyScreen()
             return visibleCategories[section].assignedTrackers.count
+        }
+        
+        if let searchQuery = searchController.searchBar.text?.lowercased(),
+           !searchQuery.isEmpty {
+            showNoSearchResultsScreen()
+            return 0
         }
         showEmptyScreen()
         return 0
