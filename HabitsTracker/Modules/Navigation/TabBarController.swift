@@ -3,10 +3,10 @@ import UIKit
 final class TabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpTabs()
+        setupTabs()
     }
     
-    private func setUpTabs() {
+    private func setupTabs() {
         let trackersListViewController = TrackersListViewController()
         
         let navigationController = UINavigationController(rootViewController: trackersListViewController)

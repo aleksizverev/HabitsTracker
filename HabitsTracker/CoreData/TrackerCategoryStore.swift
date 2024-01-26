@@ -6,7 +6,13 @@ enum CategoryStoreErrors: Error {
     case categoryTitleError
 }
 
+protocol TrackerCategoryStoreDelegate: AnyObject {
+    func storeDidUpdate(_ store: TrackerCategoryStore)
+}
+
 final class TrackerCategoryStore: NSObject {
+    weak var delegate: TrackerCategoryStoreDelegate?
+    
     private let context: NSManagedObjectContext
     
     private let uiColorMarshalling = UIColorMarshalling()
@@ -45,6 +51,8 @@ final class TrackerCategoryStore: NSObject {
     init(context: NSManagedObjectContext) {
         self.context = context
         super.init()
+        
+        fetchResultsController.delegate = self
     }
     
     func getCategory(withTitle title: String) throws -> TrackerCategoryCoreData {
@@ -89,13 +97,15 @@ final class TrackerCategoryStore: NSObject {
                                assignedTrackers: assignedTrackers)
     }
     
-    func setupCategoryDataBase() {
-        let tmpCategory1 = TrackerCategoryCoreData(context: context)
-        tmpCategory1.title = "Important"
-        
-        let tmpCategory2 = TrackerCategoryCoreData(context: context)
-        tmpCategory2.title = "Not so important"
-        
+    func createNewCategory(withTitle title: String) {
+        let newCategory = TrackerCategoryCoreData(context: context)
+        newCategory.title = title
         try? context.save()
+    }
+}
+
+extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        delegate?.storeDidUpdate(self)
     }
 }

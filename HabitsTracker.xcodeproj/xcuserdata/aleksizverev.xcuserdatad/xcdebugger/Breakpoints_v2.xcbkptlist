@@ -1,246 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Bucket
-   uuid = "4665AEAD-C886-4958-A7DA-F3D49165BAA1"
+   uuid = "DCF29CF0-8EB4-44B9-9AEA-83C04D328AFC"
    type = "1"
    version = "2.0">
    <Breakpoints>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "B66AFEBA-8D2A-4F5F-BC23-D239E8F86F23"
+            uuid = "F5F1E25E-5E07-46AC-815D-23032FB9C84E"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "HabitsTracker/Tracker/TrackersViewController.swift"
+            filePath = "HabitsTracker/Modules/TrackersPresentation/TrackersViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
-            landmarkName = "viewDidLoad()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "7642F16B-A820-4E1A-906A-B0568D822363"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HabitsTracker/Tracker/TrackersCreation/TrackerCreationViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
-            landmarkName = "trackerTitleField"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "87099AB8-45F0-45B2-81FD-F872FD6AB07C"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HabitsTracker/Tracker/TrackersCreation/TrackerCreationViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
-            landmarkName = "didTypeText(sender:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "81773DB7-AFDC-48FD-A282-DCEF7803FAD8"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "153"
-            endingLineNumber = "153"
-            landmarkName = "handleNotification(_:)"
+            startingLineNumber = "344"
+            endingLineNumber = "344"
+            landmarkName = "numberOfSections(in:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "81773DB7-AFDC-48FD-A282-DCEF7803FAD8 - 36e37d9cb77e8371"
+                  uuid = "F5F1E25E-5E07-46AC-815D-23032FB9C84E - d7db6de366101434"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "HabitsTracker.TrackersListViewController.handleNotification(Foundation.Notification) -&gt; ()"
+                  symbolName = "HabitsTracker.TrackersListViewController.numberOfSections(in: __C.UICollectionView) -&gt; Swift.Int"
                   moduleName = "HabitsTracker"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Modules/TrackersPresentation/TrackersViewController.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "185"
-                  endingLineNumber = "185"
-                  offsetFromSymbolStart = "36">
+                  startingLineNumber = "346"
+                  endingLineNumber = "346"
+                  offsetFromSymbolStart = "124">
                </Location>
                <Location
-                  uuid = "81773DB7-AFDC-48FD-A282-DCEF7803FAD8 - 36e37d9cb77e8371"
+                  uuid = "F5F1E25E-5E07-46AC-815D-23032FB9C84E - d7db6de3661015d3"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "HabitsTracker.TrackersListViewController.handleNotification(Foundation.Notification) -&gt; ()"
+                  symbolName = "HabitsTracker.TrackersListViewController.numberOfSections(in: __C.UICollectionView) -&gt; Swift.Int"
                   moduleName = "HabitsTracker"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
+                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Modules/TrackersPresentation/TrackersViewController.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "185"
-                  endingLineNumber = "185"
-                  offsetFromSymbolStart = "388">
-               </Location>
-               <Location
-                  uuid = "81773DB7-AFDC-48FD-A282-DCEF7803FAD8 - 36e37d9cb77e8c92"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "HabitsTracker.TrackersListViewController.handleNotification(Foundation.Notification) -&gt; ()"
-                  moduleName = "HabitsTracker"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "184"
-                  endingLineNumber = "184"
-                  offsetFromSymbolStart = "388">
+                  startingLineNumber = "345"
+                  endingLineNumber = "345"
+                  offsetFromSymbolStart = "124">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "968959D6-45F4-46E8-A545-D8E7C410E312"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "283"
-            endingLineNumber = "283"
-            landmarkName = "createTracker(title:categoryTitle:schedule:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "968959D6-45F4-46E8-A545-D8E7C410E312 - 3061a2c53a85bf90"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "HabitsTracker.TrackersListViewController.createTracker(title: Swift.String, categoryTitle: Swift.String, schedule: Swift.Array&lt;Swift.Int&gt;) -&gt; ()"
-                  moduleName = "HabitsTracker"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "283"
-                  endingLineNumber = "283"
-                  offsetFromSymbolStart = "812">
-               </Location>
-               <Location
-                  uuid = "968959D6-45F4-46E8-A545-D8E7C410E312 - 3061a2c53a85bf90"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "HabitsTracker.TrackersListViewController.createTracker(title: Swift.String, categoryTitle: Swift.String, schedule: Swift.Array&lt;Swift.Int&gt;) -&gt; ()"
-                  moduleName = "HabitsTracker"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "283"
-                  endingLineNumber = "283"
-                  offsetFromSymbolStart = "1468">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "7C95BDB3-DC62-4705-A7EB-44A77D544333"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "281"
-            endingLineNumber = "281"
-            landmarkName = "createTracker(title:categoryTitle:schedule:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "7C95BDB3-DC62-4705-A7EB-44A77D544333 - 3061a2c53a85bf5e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "HabitsTracker.TrackersListViewController.createTracker(title: Swift.String, categoryTitle: Swift.String, schedule: Swift.Array&lt;Swift.Int&gt;) -&gt; ()"
-                  moduleName = "HabitsTracker"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "281"
-                  endingLineNumber = "281"
-                  offsetFromSymbolStart = "764">
-               </Location>
-               <Location
-                  uuid = "7C95BDB3-DC62-4705-A7EB-44A77D544333 - 3061a2c53a85bf5e"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "HabitsTracker.TrackersListViewController.createTracker(title: Swift.String, categoryTitle: Swift.String, schedule: Swift.Array&lt;Swift.Int&gt;) -&gt; ()"
-                  moduleName = "HabitsTracker"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/aleksizverev/Dev/HabitsTracker/HabitsTracker/Tracker/TrackersPresentation/TrackersViewController.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "281"
-                  endingLineNumber = "281"
-                  offsetFromSymbolStart = "1220">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "7264ACDC-F120-48B6-B458-57B829F9702D"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HabitsTracker/Tracker/TrackersCreation/TrackerCategoryViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "52"
-            endingLineNumber = "52"
-            landmarkName = "didTapDoneButton()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "E5EF1D17-3F39-465F-899D-D25458DECB72"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HabitsTracker/Modules/TrackersCreation/TrackerCreationViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "473"
-            endingLineNumber = "473"
-            landmarkName = "collectionView(_:viewForSupplementaryElementOfKind:at:)"
-            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

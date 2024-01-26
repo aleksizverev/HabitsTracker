@@ -168,9 +168,12 @@ final class IrregularTrackerCreationViewController: UIViewController {
     
     private func didTapCategoryButton() {
         view.endEditing(true)
-        let trackerCategoryVC = TrackerCategoryViewController()
-        trackerCategoryVC.delegate = self
-        trackerCategoryVC.setChosenCategory(category: trackerCategory)
+        let viewModel = TrackerCategoryViewModel(categoryStore: TrackerCategoryStore())
+        viewModel.delegate = self
+        if let trackerCategory = trackerCategory {
+            viewModel.setChosenCategory(withTitle: trackerCategory)
+        }
+        let trackerCategoryVC = TrackerCategoryViewController(viewModel: viewModel)
         present(UINavigationController(rootViewController: trackerCategoryVC), animated: true)
     }
     
@@ -234,7 +237,7 @@ final class IrregularTrackerCreationViewController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             stackView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
             
-            trackerTitleField.heightAnchor.constraint(equalToConstant: Constants.defaultStackElementHeight),
+            trackerTitleField.heightAnchor.constraint(equalToConstant: Constants.defaultCellHeight),
             
             tableView.heightAnchor.constraint(equalToConstant: Constants.defaultTableViewHeight),
             

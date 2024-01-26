@@ -64,12 +64,14 @@ final class TrackerCell: UICollectionViewCell {
     }()
     
     private lazy var completionButton: UIButton = {
-        let button = UIButton.systemButton(
-            with: UIImage(systemName: "plus") ?? UIImage(),
-            target: self,
-            action: #selector(Self.completionButtonDidTap))
+        let button = UIButton(type: .custom)
+        button.addTarget(self,
+                         action: #selector(Self.completionButtonDidTap),
+                         for: .touchUpInside)
+        button.setImage(UIImage(systemName: "plus") ?? UIImage(), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.layer.cornerRadius = 20
+        button.layer.cornerRadius = 16
+        button.tintColor = .white
         return button
     }()
     
@@ -129,7 +131,9 @@ final class TrackerCell: UICollectionViewCell {
             statisticsLabel.topAnchor.constraint(equalTo: cellDescriptionView.bottomAnchor, constant: 16),
             
             completionButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            completionButton.centerYAnchor.constraint(equalTo: statisticsLabel.centerYAnchor)
+            completionButton.centerYAnchor.constraint(equalTo: statisticsLabel.centerYAnchor),
+            completionButton.widthAnchor.constraint(equalToConstant: 34),
+            completionButton.heightAnchor.constraint(equalToConstant: 34)
         ])
     }
     
@@ -142,10 +146,10 @@ final class TrackerCell: UICollectionViewCell {
     private func updateCompletionButtonState() {
         if isCompletedToday {
             completionButton.setImage(UIImage(systemName: "checkmark"), for: .normal)
-            completionButton.alpha = 1
+            completionButton.alpha = 0.3
         } else {
             completionButton.setImage(UIImage(systemName: "plus"), for: .normal)
-            completionButton.alpha = 0.3
+            completionButton.alpha = 1
         }
     }
     
@@ -160,7 +164,7 @@ final class TrackerCell: UICollectionViewCell {
         habitDescriptionLabel.text = descriptionName
         emojiLabel.text = emoji
         cellDescriptionView.backgroundColor = descriptionViewBackgroundColor
-        completionButton.tintColor = completionButtonTintColor
+        completionButton.backgroundColor = completionButtonTintColor
         completionCounter = counter
         trackerId = trackerID
         isCompletedToday = completionFlag
