@@ -98,6 +98,12 @@ final class TrackerStore: NSObject {
         return tracker
     }
     
+    func deleteTracker(withID id: UUID) throws {
+        let tracker = try getTracker(withID: id)
+        context.delete(tracker)
+        try? context.save()
+    }
+    
     func changePinStateForTracker(withID id: UUID) throws {
         guard let tracker = try? getTracker(withID: id) else {
             throw TrackerStorageErrors.getTrackerByIDError

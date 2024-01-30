@@ -222,9 +222,10 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
             let editAction = UIAction(title: "Edit") { _ in
                 self.delegate?.editTracker(id: self.trackerId)
             }
-            let deleteAction = UIAction(title: "Delete") { _ in
+            let deleteAction = UIAction(title: "Delete", attributes: .destructive) { _ in
                 self.delegate?.deleteTracker(id: self.trackerId)
             }
+            
             return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
         })
     }

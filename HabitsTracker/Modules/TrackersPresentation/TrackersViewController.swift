@@ -122,6 +122,29 @@ final class TrackersListViewController: UIViewController {
         collectionView.contentInset = UIEdgeInsets(top: 6, left: 16, bottom: 24, right: 16)
     }
     
+    private func presentDeleteAlertController(forTrackerWithID id: UUID) {
+        let alert = UIAlertController(
+            title: "Are you sure?",
+            message: "",
+            preferredStyle: .actionSheet
+        )
+        alert.addAction(UIAlertAction(
+            title: "Delete",
+            style: .destructive,
+            handler: { [weak self] _ in
+                try? self?.trackerStore.deleteTracker(withID: id)
+                self?.updateVisibleCategories()
+                alert.dismiss(animated: true)
+            }))
+        alert.addAction(UIAlertAction(
+            title: "Cancel",
+            style: .cancel,
+            handler: { _ in
+                alert.dismiss(animated: true)
+            }))
+        present(alert, animated: true, completion: nil)
+    }
+    
     private func showEmptyScreen() {
         placeholderImageView.image = UIImage(named: "TrackersListPlaceholder")
         placeholderText.text = "What shall we track?"
@@ -446,7 +469,9 @@ extension TrackersListViewController: TrackerCellDelegate {
     }
     
     func deleteTracker(id: UUID) {
-        print("Tracker deletedr")
+        presentDeleteAlertController(forTrackerWithID: id)
+//        try? trackerStore.deleteTracker(withID: id)
+//        updateVisibleCategories()
     }
     
     func recordTrackerCompletionForSelectedDate(id: UUID) {
