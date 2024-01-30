@@ -97,6 +97,35 @@ final class TrackerStore: NSObject {
         }
         return tracker
     }
+    
+    func changePinStateForTracker(withID id: UUID) throws {
+        guard let tracker = try? getTracker(withID: id) else {
+            throw TrackerStorageErrors.getTrackerByIDError
+        }
+        let state = tracker.isPinned
+        tracker.isPinned = !state
+        try? context.save()
+    }
+    
+    func getPinnedTrackers() -> [Tracker] {
+        let request = TrackerCoreData.fetchRequest()
+        request.returnsObjectsAsFaults = false
+        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCoreData.isPinned), NSNumber(value: true))
+        
+        let trackers = try? context.fetch(request)
+        
+        guard let trackers = trackers else {
+            return []
+        }
+        
+        let pinnedTrackers = try? trackers.map({ try tracker(from: $0) })
+        
+        guard let pinnedTrackers = pinnedTrackers else {
+            return []
+        }
+        
+        return pinnedTrackers
+    }
 }
 
 extension TrackerStore: NSFetchedResultsControllerDelegate {    

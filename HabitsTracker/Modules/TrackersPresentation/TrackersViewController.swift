@@ -10,11 +10,11 @@ final class TrackersListViewController: UIViewController {
     let recordStore = TrackerRecordStore()
     
     // MARK: - LogicVariables
-    let emojis: [String] = ["😀", "😎", "🚀", "⚽️", "🍕", "🎉", "🌟", "🎈", "🐶", "🍦", "🎸", "📚", "🚲", "🏖️", "🍩", "🎲", "🍭", "🖥️", "🌈", "🍔", "📱", "🛸", "🏕️", "🎨", "🌺", "🎁", "📷", "🍉", "🧩", "🎳"]
-    
     private var allCategories: [TrackerCategory] = []
     
     private var visibleCategories: [TrackerCategory] = []
+    
+    private var pinnedTrackers: [Tracker] = []
     
     private var completedTrackers: [TrackerRecord] = []
     
@@ -72,6 +72,7 @@ final class TrackersListViewController: UIViewController {
         
         completedTrackers = recordStore.records
         allCategories = categoryStore.categories
+        pinnedTrackers = trackerStore.getPinnedTrackers()
         visibleCategories = allCategories
         updateVisibleCategories()
         
@@ -189,7 +190,7 @@ final class TrackersListViewController: UIViewController {
         if let userData = notification.userInfo,
            let tracker = userData["Tracker"] as? Tracker,
            let categoryTitle = userData["Category"] as? String {
-        
+            
             let categoryCoreData = try? categoryStore.getCategory(withTitle: categoryTitle)
             guard let categoryCoreData = categoryCoreData else {
                 return
@@ -204,13 +205,14 @@ final class TrackersListViewController: UIViewController {
         visibleCategories = []
         allCategories.forEach { category in
             category.assignedTrackers.forEach { tracker in
-                if tracker.isScheduledForDayNumber(currentDayNumber) {
+                if tracker.isScheduledForDayNumber(currentDayNumber) && !isTrackerPinned(withID: tracker.id) {
                     visibleCategories = addNewCategory(toList: visibleCategories,
                                                        named: category.title,
                                                        assignedTrackers: [tracker])
                 }
             }
         }
+        updatePinnedCategories()
         collectionView.reloadData()
     }
     
@@ -227,13 +229,27 @@ final class TrackersListViewController: UIViewController {
         allCategories.forEach { category in
             let foundTrackers = category.assignedTrackers.filter {
                 $0.title.lowercased().contains(searchQuery) &&
-                $0.isScheduledForDayNumber(currentDayNumber)
+                ($0.isScheduledForDayNumber(currentDayNumber) || isTrackerPinned(withID: $0.id))
             }
             if !foundTrackers.isEmpty {
                 filteredCategories = addNewCategory(toList: filteredCategories, named: category.title, assignedTrackers: foundTrackers)
             }
         }
         visibleCategories = filteredCategories
+        collectionView.reloadData()
+    }
+    
+    private func updatePinnedCategories() {
+        pinnedTrackers = trackerStore.getPinnedTrackers()
+        if !pinnedTrackers.isEmpty {
+            visibleCategories = addNewCategory(toList: visibleCategories, named: "Pinned trackers", assignedTrackers: pinnedTrackers)
+        }
+        
+        if pinnedTrackers.isEmpty {
+            visibleCategories = visibleCategories.filter { category in
+                category.title != "Pinned trackers"
+            }
+        }
         collectionView.reloadData()
     }
     
@@ -284,6 +300,13 @@ final class TrackersListViewController: UIViewController {
     
     private func isAllowedToBeCompletedToday() -> Bool {
         Date() >= currentDatePickerDateValue
+    }
+    
+    private func isTrackerPinned(withID id: UUID) -> Bool {
+        guard let tracker = try? trackerStore.getTracker(withID: id) else {
+            return false
+        }
+        return tracker.isPinned
     }
 }
 
@@ -402,7 +425,9 @@ extension TrackersListViewController: UICollectionViewDataSource {
                               trackerID: tracker.id,
                               counter: getRecordsForTracker(withId: tracker.id).count,
                               completionFlag: isTrackerCompletedToday(withID: tracker.id),
-                              isCompletionAlowed: isAllowedToBeCompletedToday())
+                              isCompletionAlowed: isAllowedToBeCompletedToday(),
+                              isPinnedState: isTrackerPinned(withID: tracker.id)
+        )
         
         cell.delegate = self
         return cell
@@ -411,6 +436,19 @@ extension TrackersListViewController: UICollectionViewDataSource {
 
 // MARK: - TrackerCellDelegate
 extension TrackersListViewController: TrackerCellDelegate {
+    func changePinState(id: UUID) {
+        try? trackerStore.changePinStateForTracker(withID: id)
+        updateVisibleCategories()
+    }
+    
+    func editTracker(id: UUID) {
+        print("Tracker edited")
+    }
+    
+    func deleteTracker(id: UUID) {
+        print("Tracker deletedr")
+    }
+    
     func recordTrackerCompletionForSelectedDate(id: UUID) {
         var newRecordList = completedTrackers
         newRecordList.append(TrackerRecord(id: id, date: currentDatePickerDateValue))
