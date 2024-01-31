@@ -45,4 +45,15 @@ final class ColorCell: UICollectionViewCell {
         }
         return cellColor
     }
+    
+    func didSelectColor(color: CGColor) {
+        layer.borderColor = color
+        layer.borderWidth = 3
+        layer.cornerRadius = 8
+        layer.masksToBounds = true
+    }
+    
+    func didDeselectColor() {
+        layer.borderColor = UIColor.clear.cgColor
+    }
 }

@@ -3,6 +3,7 @@ import CoreData
 
 enum TrackerStorageErrors: Error {
     case getTrackerByIDError
+    case getTrackerCategoryError
     case trackerCastError
     case trackerIDError
     case trackerTitleError
@@ -73,6 +74,29 @@ final class TrackerStore: NSObject {
                        color: uiColorMarshalling.color(from: color),
                        emoji: emoji,
                        schedule: schedule)
+    }
+    
+    func getTrackerCategory(withID id: UUID) throws -> String {
+        let tracker = try getTracker(withID: id)
+        
+        guard let category = tracker.category?.title else {
+            throw TrackerStorageErrors.getTrackerCategoryError
+        }
+        return category
+    }
+    
+    func updateTracker(withID id: UUID,
+                       usingDataFrom tracker: Tracker,
+                       inCategory category: TrackerCategoryCoreData) throws {
+        let trackerToUpdate = try getTracker(withID: id)
+        trackerToUpdate.title = tracker.title
+        trackerToUpdate.color = uiColorMarshalling.hexString(from: tracker.color)
+        trackerToUpdate.emoji = tracker.emoji
+        trackerToUpdate.schedule = tracker.schedule
+        
+        trackerToUpdate.category?.removeFromTracker(trackerToUpdate)
+        category.addToTracker(trackerToUpdate)
+        try? context.save()
     }
     
     func createNewTracker(tracker: Tracker, to categoryCoreData: TrackerCategoryCoreData) {

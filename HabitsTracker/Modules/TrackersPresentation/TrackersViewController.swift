@@ -63,6 +63,11 @@ final class TrackersListViewController: UIViewController {
                                                name: NSNotification.Name("CategoriesUpdateNotification"),
                                                object: nil)
         
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleEditNotification(_:)),
+                                               name: NSNotification.Name("TrackerEditNotification"),
+                                               object: nil)
+        
         self.view.backgroundColor = .white
         
         trackerStore.delegate = self
@@ -219,6 +224,22 @@ final class TrackersListViewController: UIViewController {
                 return
             }
             trackerStore.createNewTracker(tracker: tracker, to: categoryCoreData)
+            updateVisibleCategories()
+        }
+    }
+    
+    @objc func handleEditNotification(_ notification: Notification) {
+        if let userData = notification.userInfo,
+           let tracker = userData["Tracker"] as? Tracker,
+           let categoryTitle = userData["Category"] as? String {
+            
+            let categoryCoreData = try? categoryStore.getCategory(withTitle: categoryTitle)
+            guard let categoryCoreData = categoryCoreData else {
+                return
+            }
+            
+            try? trackerStore.updateTracker(withID: tracker.id, usingDataFrom: tracker, inCategory: categoryCoreData)
+            
             updateVisibleCategories()
         }
     }
@@ -464,14 +485,29 @@ extension TrackersListViewController: TrackerCellDelegate {
         updateVisibleCategories()
     }
     
-    func editTracker(id: UUID) {
-        print("Tracker edited")
+    func editTracker(id: UUID, counter: Int) {
+        guard let tracker = try? trackerStore.tracker(from: trackerStore.getTracker(withID: id)) else {
+            return
+        }
+        
+        guard let trackerCategory = try? trackerStore.getTrackerCategory(withID: id) else {
+            return
+        }
+        
+        present(UINavigationController(rootViewController: TrackerEditingViewController(
+            id: id,
+            title: tracker.title,
+            category: trackerCategory,
+            schedule: tracker.schedule,
+            emoji: tracker.emoji,
+            color: tracker.color, 
+            counter: counter
+        )),
+                animated: true)
     }
     
     func deleteTracker(id: UUID) {
         presentDeleteAlertController(forTrackerWithID: id)
-//        try? trackerStore.deleteTracker(withID: id)
-//        updateVisibleCategories()
     }
     
     func recordTrackerCompletionForSelectedDate(id: UUID) {

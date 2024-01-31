@@ -4,7 +4,7 @@ protocol TrackerCellDelegate: AnyObject {
     func recordTrackerCompletionForSelectedDate(id: UUID)
     func removeTrackerCompletionForSelectedDate(id: UUID)
     func changePinState(id: UUID)
-    func editTracker(id: UUID)
+    func editTracker(id: UUID, counter: Int)
     func deleteTracker(id: UUID)
 }
 
@@ -220,7 +220,7 @@ extension TrackerCell: UIContextMenuInteractionDelegate {
                 self.delegate?.changePinState(id: self.trackerId)
             }
             let editAction = UIAction(title: "Edit") { _ in
-                self.delegate?.editTracker(id: self.trackerId)
+                self.delegate?.editTracker(id: self.trackerId, counter: self.completionCounter)
             }
             let deleteAction = UIAction(title: "Delete", attributes: .destructive) { _ in
                 self.delegate?.deleteTracker(id: self.trackerId)
