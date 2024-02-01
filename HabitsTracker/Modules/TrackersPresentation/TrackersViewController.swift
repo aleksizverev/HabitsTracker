@@ -338,7 +338,8 @@ final class TrackersListViewController: UIViewController {
     private func updatePinnedCategories() {
         pinnedTrackers = trackerStore.getPinnedTrackers()
         if !pinnedTrackers.isEmpty {
-            visibleCategories = addNewCategory(toList: visibleCategories, named: "Pinned trackers", assignedTrackers: pinnedTrackers)
+            let pinnedCategory = TrackerCategory(title: "Pinned trackers", assignedTrackers: pinnedTrackers)
+            visibleCategories.insert(pinnedCategory, at: 0)
         }
         
         if pinnedTrackers.isEmpty {
