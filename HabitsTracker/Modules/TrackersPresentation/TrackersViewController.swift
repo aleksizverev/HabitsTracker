@@ -9,6 +9,8 @@ final class TrackersListViewController: UIViewController {
     
     let recordStore = TrackerRecordStore()
     
+    private let myCalendar = Calendar(identifier: .gregorian)
+    
     // MARK: - LogicVariables
     private var allCategories: [TrackerCategory] = []
     
@@ -16,13 +18,13 @@ final class TrackersListViewController: UIViewController {
     
     private var pinnedTrackers: [Tracker] = []
     
+    private var chosenFilter: String?
+    
     private var completedTrackers: [TrackerRecord] = []
     
     private lazy var currentDatePickerDateValue: Date = myCalendar.startOfDay(for: Date())
     
     private lazy var currentDayNumber: Int = getCurrentDayNaumber(date: currentDatePickerDateValue)
-    
-    private let myCalendar = Calendar(identifier: .gregorian)
     
     // MARK: - UIVariables
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
@@ -34,6 +36,17 @@ final class TrackersListViewController: UIViewController {
         staticView.translatesAutoresizingMaskIntoConstraints = false
         staticView.backgroundColor = .white
         return staticView
+    }()
+    
+    private var datePicker: UIDatePicker = {
+        let datePicker = UIDatePicker()
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.datePickerMode = .date
+        datePicker.locale = Locale(identifier: "fi")
+        datePicker.clipsToBounds = true
+        datePicker.calendar.firstWeekday = 2
+        return datePicker
     }()
     
     private lazy var placeholderImageView: UIImageView = {
@@ -52,6 +65,18 @@ final class TrackersListViewController: UIViewController {
         label.textAlignment = .center
         label.isHidden = true
         return label
+    }()
+    
+    private lazy var filtersButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Filters", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.backgroundColor = UIColor(named: "YP Blue")
+        button.layer.cornerRadius = 16
+        button.titleLabel?.font = .systemFont(ofSize: 17)
+        button.addTarget(self, action: #selector(didTapFiltersButton), for: .touchUpInside)
+        return button
     }()
     
     // MARK: - SetupFunctions
@@ -97,16 +122,9 @@ final class TrackersListViewController: UIViewController {
         self.navigationItem.title = "Trackers"
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
-        let datePicker = UIDatePicker()
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.preferredDatePickerStyle = .compact
-        datePicker.datePickerMode = .date
-        datePicker.locale = Locale(identifier: "fi")
-        datePicker.clipsToBounds = true
-        datePicker.calendar.firstWeekday = 2
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         datePicker.addTarget(self,
                              action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
         let image = UIImage(named: "AddTrackerButton")
         let plusButton = UIBarButtonItem(image: image,
@@ -174,11 +192,20 @@ final class TrackersListViewController: UIViewController {
         placeholderText.isHidden = true
     }
     
+    private func showFiltersButton() {
+        filtersButton.isHidden = false
+    }
+    
+    private func hideFiltersButton() {
+        filtersButton.isHidden = true
+    }
+    
     private func addSubviews() {
         view.addSubview(staticView)
         view.addSubview(collectionView)
         view.addSubview(placeholderImageView)
         view.addSubview(placeholderText)
+        view.addSubview(filtersButton)
     }
     
     private func applyConstraints() {
@@ -198,7 +225,12 @@ final class TrackersListViewController: UIViewController {
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: staticView.bottomAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            filtersButton.heightAnchor.constraint(equalToConstant: 50),
+            filtersButton.widthAnchor.constraint(equalToConstant: 114),
+            filtersButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            filtersButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -15)
         ])}
     
     // MARK: - Selectors
@@ -209,9 +241,18 @@ final class TrackersListViewController: UIViewController {
     
     @objc private func datePickerValueChanged(_ sender: UIDatePicker) {
         let senderDate = sender.date
-        currentDatePickerDateValue = myCalendar.startOfDay(for: senderDate)
-        currentDayNumber = getCurrentDayNaumber(date: senderDate)
-        updateVisibleCategories()
+        changeDatePickerValue(forDate: senderDate)
+    }
+    
+    @objc private func didTapFiltersButton() {
+        let filtersVC = FiltersViewController()
+        filtersVC.delegate = self
+        
+        if let chosenFilter = chosenFilter {
+            filtersVC.setChosenFilter(withTitle: chosenFilter)
+        }
+        
+        present(UINavigationController(rootViewController: filtersVC), animated: true)
     }
     
     @objc func handleNotification(_ notification: Notification) {
@@ -245,6 +286,17 @@ final class TrackersListViewController: UIViewController {
     }
     
     // MARK: - LogicFunctions
+    private func changeDatePickerValue(forDate date: Date) {
+        if chosenFilter == "Trackers for today" {
+            chosenFilter = "All trackers"
+        }
+        
+        currentDatePickerDateValue = myCalendar.startOfDay(for: date)
+        currentDayNumber = getCurrentDayNaumber(date: date)
+        updateVisibleCategories()
+        applyChosenFilter()
+    }
+    
     private func updateVisibleCategories(forDayOfTheWeek dayNumber: Int) {
         visibleCategories = []
         allCategories.forEach { category in
@@ -269,17 +321,17 @@ final class TrackersListViewController: UIViewController {
             return
         }
         
-        var filteredCategories: [TrackerCategory] = []
+        var foundCategories: [TrackerCategory] = []
         allCategories.forEach { category in
             let foundTrackers = category.assignedTrackers.filter {
                 $0.title.lowercased().contains(searchQuery) &&
                 ($0.isScheduledForDayNumber(currentDayNumber) || isTrackerPinned(withID: $0.id))
             }
             if !foundTrackers.isEmpty {
-                filteredCategories = addNewCategory(toList: filteredCategories, named: category.title, assignedTrackers: foundTrackers)
+                foundCategories = addNewCategory(toList: foundCategories, named: category.title, assignedTrackers: foundTrackers)
             }
         }
-        visibleCategories = filteredCategories
+        visibleCategories = foundCategories
         collectionView.reloadData()
     }
     
@@ -418,16 +470,24 @@ extension TrackersListViewController: UICollectionViewDataSource {
         if let searchQuery = searchController.searchBar.text?.lowercased(),
            !searchQuery.isEmpty {
             showNoSearchResultsScreen()
-            return 1
+            return 0
         }
+        
+        if chosenFilter != "All trackers" {
+            showNoSearchResultsScreen()
+            return 0
+        }
+        
         showEmptyScreen()
-        return 1
+        hideFiltersButton()
+        return 0
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if !visibleCategories.isEmpty {
             hideNoSearchResultsScreen()
             hideEmptyScreen()
+            showFiltersButton()
             return visibleCategories[section].assignedTrackers.count
         }
         
@@ -437,6 +497,7 @@ extension TrackersListViewController: UICollectionViewDataSource {
             return 0
         }
         showEmptyScreen()
+        hideFiltersButton()
         return 0
     }
     
@@ -478,6 +539,21 @@ extension TrackersListViewController: UICollectionViewDataSource {
     }
 }
 
+// MARK: - UISearchResultsUpdating
+extension TrackersListViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        applyChosenFilter()
+    }
+}
+
+// MARK: - UISearchControllerDelegate
+extension TrackersListViewController: UISearchControllerDelegate {
+    func willDismissSearchController(_ searchController: UISearchController) {
+        applyChosenFilter()
+        print(visibleCategories)
+    }
+}
+
 // MARK: - TrackerCellDelegate
 extension TrackersListViewController: TrackerCellDelegate {
     func changePinState(id: UUID) {
@@ -500,7 +576,7 @@ extension TrackersListViewController: TrackerCellDelegate {
             category: trackerCategory,
             schedule: tracker.schedule,
             emoji: tracker.emoji,
-            color: tracker.color, 
+            color: tracker.color,
             counter: counter
         )),
                 animated: true)
@@ -533,24 +609,63 @@ extension TrackersListViewController: TrackerCellDelegate {
     }
 }
 
-// MARK: - UISearchResultsUpdating
-extension TrackersListViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
-        updateVisibleCategories()
-    }
-}
-
-// MARK: - UISearchControllerDelegate
-extension TrackersListViewController: UISearchControllerDelegate {
-    func willDismissSearchController(_ searchController: UISearchController) {
-        updateVisibleCategories(forDayOfTheWeek: currentDayNumber)
-        collectionView.reloadData()
-    }
-}
-
+// MARK: - TrackerStoreDelegate
 extension TrackersListViewController: TrackerStoreDelegate {
     func update() {
         allCategories = categoryStore.categories
         collectionView.reloadData()
+    }
+}
+
+extension TrackersListViewController: FilterViewControllerDelegate {
+    private func filterCategoriesByCompletion() {
+        updateVisibleCategories()
+        visibleCategories = visibleCategories.map { category in
+            let filteredTerackers = category.assignedTrackers.filter { tracker in
+                isTrackerCompletedToday(withID: tracker.id)
+            }
+            return TrackerCategory(title: category.title, assignedTrackers: filteredTerackers)
+        }
+        
+        visibleCategories = visibleCategories.filter { category in
+            !category.assignedTrackers.isEmpty
+        }
+        collectionView.reloadData()
+    }
+    
+    private func filterCategoriesByUncompletion() {
+        updateVisibleCategories()
+        visibleCategories = visibleCategories.map { category in
+            let filteredTerackers = category.assignedTrackers.filter { tracker in
+                !isTrackerCompletedToday(withID: tracker.id)
+            }
+            return TrackerCategory(title: category.title, assignedTrackers: filteredTerackers)
+        }
+        
+        visibleCategories = visibleCategories.filter { category in
+            !category.assignedTrackers.isEmpty
+        }
+        collectionView.reloadData()
+    }
+    
+    private func applyChosenFilter() {
+        switch chosenFilter {
+        case "All Trackers":
+            updateVisibleCategories()
+        case "Trackers for today":
+            datePicker.setDate(Date(), animated: true)
+            changeDatePickerValue(forDate: Date())
+        case "Completed":
+            filterCategoriesByCompletion()
+        case "Uncompleted":
+            filterCategoriesByUncompletion()
+        default:
+            updateVisibleCategories()
+        }
+    }
+    
+    func applyFilter(filter: String?) {
+        chosenFilter = filter
+        applyChosenFilter()
     }
 }

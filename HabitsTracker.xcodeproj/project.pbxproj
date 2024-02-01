@@ -25,6 +25,8 @@
 		17A5B2792B389318000BB8E2 /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A5B2782B389318000BB8E2 /* TrackerCategoryStore.swift */; };
 		17A5B27B2B38940E000BB8E2 /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A5B27A2B38940E000BB8E2 /* TrackerRecordStore.swift */; };
 		17A5B2832B3ACBDD000BB8E2 /* UIColorMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A5B2822B3ACBDD000BB8E2 /* UIColorMarshalling.swift */; };
+		17B308382B6BA3720035B58A /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B308372B6BA3720035B58A /* FiltersViewController.swift */; };
+		17B3083C2B6BA99C0035B58A /* FilterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B3083B2B6BA99C0035B58A /* FilterCell.swift */; };
 		17B8E7662AE0491B00875EE0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B8E7652AE0491B00875EE0 /* AppDelegate.swift */; };
 		17B8E76F2AE0491C00875EE0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17B8E76E2AE0491C00875EE0 /* Assets.xcassets */; };
 		17B8E7722AE0491C00875EE0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17B8E7702AE0491C00875EE0 /* LaunchScreen.storyboard */; };
@@ -66,6 +68,8 @@
 		17A5B2782B389318000BB8E2 /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		17A5B27A2B38940E000BB8E2 /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
 		17A5B2822B3ACBDD000BB8E2 /* UIColorMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorMarshalling.swift; sourceTree = "<group>"; };
+		17B308372B6BA3720035B58A /* FiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
+		17B3083B2B6BA99C0035B58A /* FilterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCell.swift; sourceTree = "<group>"; };
 		17B8E7622AE0491B00875EE0 /* HabitsTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HabitsTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17B8E7652AE0491B00875EE0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		17B8E76E2AE0491C00875EE0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -204,6 +208,15 @@
 			path = CoreData;
 			sourceTree = "<group>";
 		};
+		17B308362B6BA3200035B58A /* Filtration */ = {
+			isa = PBXGroup;
+			children = (
+				17B308372B6BA3720035B58A /* FiltersViewController.swift */,
+				17B3083B2B6BA99C0035B58A /* FilterCell.swift */,
+			);
+			path = Filtration;
+			sourceTree = "<group>";
+		};
 		17B8E7592AE0491B00875EE0 = {
 			isa = PBXGroup;
 			children = (
@@ -239,6 +252,7 @@
 		17C23B002AE275BF003148BF /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				17B308362B6BA3200035B58A /* Filtration */,
 				171FA5FB2B5AF3E30094397C /* Onboarding */,
 				174A0C8F2B286077009F9EF2 /* Navigation */,
 				174A0C8E2B28605A009F9EF2 /* UserStatistics */,
@@ -410,6 +424,7 @@
 				17A5B2792B389318000BB8E2 /* TrackerCategoryStore.swift in Sources */,
 				17D403A62B486F9C004C4F4E /* HabitColors.swift in Sources */,
 				173A52202B29E8C6001A9CC6 /* PropertiesCollectionViewSectionHeader.swift in Sources */,
+				17B3083C2B6BA99C0035B58A /* FilterCell.swift in Sources */,
 				1761F3482B55AB1D00AE5D0C /* TrackerCategoryViewModel.swift in Sources */,
 				17C9F0ED2AEAC356005CC7ED /* TrackersCollectionViewSectionHeader.swift in Sources */,
 				1771F4002B3F6C1F00BB186D /* TrackerData.xcdatamodeld in Sources */,
@@ -423,6 +438,7 @@
 				17A5B2832B3ACBDD000BB8E2 /* UIColorMarshalling.swift in Sources */,
 				171FA5FD2B5AF4010094397C /* OnboardingViewController.swift in Sources */,
 				171FA5FF2B5B00DC0094397C /* PageViewController.swift in Sources */,
+				17B308382B6BA3720035B58A /* FiltersViewController.swift in Sources */,
 				17B8E77A2AE04AB700875EE0 /* SplashScreenViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
