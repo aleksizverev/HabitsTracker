@@ -34,20 +34,23 @@ final class TrackersListViewController: UIViewController {
     private var staticView: UIView = {
         let staticView = UIView()
         staticView.translatesAutoresizingMaskIntoConstraints = false
-        staticView.backgroundColor = .white
         return staticView
     }()
     
     private var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
         datePicker.translatesAutoresizingMaskIntoConstraints = false
+        datePicker.backgroundColor = UIColor(named: "YP LightGray")
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         datePicker.locale = Locale(identifier: "fi")
         datePicker.clipsToBounds = true
         datePicker.calendar.firstWeekday = 2
+        datePicker.layer.cornerRadius = 8
         return datePicker
     }()
+    
+    private var colors = Colors()
     
     private lazy var placeholderImageView: UIImageView = {
         let imageView = UIImageView()
@@ -93,7 +96,7 @@ final class TrackersListViewController: UIViewController {
                                                name: NSNotification.Name("TrackerEditNotification"),
                                                object: nil)
         
-        self.view.backgroundColor = .white
+        self.view.backgroundColor = colors.viewBackgroundColor
         
         trackerStore.delegate = self
         
@@ -111,7 +114,6 @@ final class TrackersListViewController: UIViewController {
     }
     
     private func setupNavBar() {
-        
         self.navigationItem.searchController = searchController
         self.navigationItem.searchController?.searchResultsUpdater = self
         self.navigationItem.searchController?.delegate = self
@@ -131,7 +133,7 @@ final class TrackersListViewController: UIViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(Self.createTrackerButtonDidTap))
-        plusButton.tintColor = UIColor(named: "YP Black")
+        plusButton.tintColor = colors.buttonColor
         self.navigationItem.leftBarButtonItem = plusButton
         self.navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: -12, bottom: 0, right: 0)
     }
@@ -417,6 +419,10 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
         return 9
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        0
+    }
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         var id: String
         
@@ -438,6 +444,7 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
             return view
         }
         view.titleLabel.text = visibleCategories[indexPath.section].title
+        view.titleLabel.textColor = colors.collectionViewTextColor
         
         return view
     }
@@ -455,7 +462,7 @@ extension TrackersListViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        UIEdgeInsets(top: 10, left: 0, bottom: 16, right: 0)
+        UIEdgeInsets(top: 10, left: 0, bottom: 8, right: 0)
     }
 }
 
