@@ -11,11 +11,19 @@ final class Colors {
         }
     }
     
-    let buttonColor = UIColor { (traits: UITraitCollection) -> UIColor in
+    let addTrackerButtonColor = UIColor { (traits: UITraitCollection) -> UIColor in
         if traits.userInterfaceStyle == .light {
             return UIColor(named: "YP Black")!
         } else {
             return UIColor.white
+        }
+    }
+    
+    let completeTrackerButtonColor = UIColor { (traits: UITraitCollection) -> UIColor in
+        if traits.userInterfaceStyle == .light {
+            return UIColor.white
+        } else {
+            return UIColor(named: "YP Black")!
         }
     }
     

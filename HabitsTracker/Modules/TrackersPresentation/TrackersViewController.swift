@@ -42,7 +42,6 @@ final class TrackersListViewController: UIViewController {
     private var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
         datePicker.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.backgroundColor = UIColor(named: "YP LightGray")
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         datePicker.locale = Locale(identifier: "fi")
@@ -145,7 +144,7 @@ final class TrackersListViewController: UIViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(Self.createTrackerButtonDidTap))
-        plusButton.tintColor = colors.buttonColor
+        plusButton.tintColor = colors.addTrackerButtonColor
         self.navigationItem.leftBarButtonItem = plusButton
         self.navigationItem.leftBarButtonItem?.imageInsets = UIEdgeInsets(top: 0, left: -12, bottom: 0, right: 0)
     }

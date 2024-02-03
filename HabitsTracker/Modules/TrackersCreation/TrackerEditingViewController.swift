@@ -11,7 +11,7 @@ final class TrackerEditingViewController: UIViewController {
         7: "Sun"
     ]
     
-    private var counterLable: UILabel = {
+    private var counterLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.font = UIFont.systemFont(ofSize: 32, weight: .bold)
@@ -233,7 +233,7 @@ final class TrackerEditingViewController: UIViewController {
     
     // MARK: - SetupFunctions
     private func updateHabitStatisticsLabelDays(counter: Int) {
-        counterLable.text = counter == 1
+        counterLabel.text = counter == 1
         ? String(counter) + " day"
         : String(counter) + " days"
     }
@@ -280,7 +280,7 @@ final class TrackerEditingViewController: UIViewController {
         scrollView.addSubview(stackView)
         
         [
-            counterLable,
+            counterLabel,
             trackerTitleField,
             tableView,
             emojisCollectionView,
@@ -294,7 +294,7 @@ final class TrackerEditingViewController: UIViewController {
             creationButtonsStack.addArrangedSubview(view)
         }
         
-        stackView.setCustomSpacing(16, after: counterLable)
+        stackView.setCustomSpacing(16, after: counterLabel)
         stackView.setCustomSpacing(24, after: trackerTitleField)
         stackView.setCustomSpacing(32, after: tableView)
         stackView.setCustomSpacing(16, after: emojisCollectionView)
@@ -314,7 +314,7 @@ final class TrackerEditingViewController: UIViewController {
             stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             stackView.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
             
-            counterLable.heightAnchor.constraint(equalToConstant: 38),
+            counterLabel.heightAnchor.constraint(equalToConstant: 38),
             
             trackerTitleField.heightAnchor.constraint(equalToConstant: Constants.defaultCellHeight),
             

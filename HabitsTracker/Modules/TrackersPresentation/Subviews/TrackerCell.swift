@@ -9,6 +9,8 @@ protocol TrackerCellDelegate: AnyObject {
 }
 
 final class TrackerCell: UICollectionViewCell {
+    let colors = Colors()
+    
     weak var delegate: TrackerCellDelegate?
     
     private var completionCounter: Int = 0 {
@@ -76,7 +78,7 @@ final class TrackerCell: UICollectionViewCell {
         button.setImage(UIImage(systemName: "plus") ?? UIImage(), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
-        button.tintColor = .white
+        button.tintColor = colors.completeTrackerButtonColor
         return button
     }()
     

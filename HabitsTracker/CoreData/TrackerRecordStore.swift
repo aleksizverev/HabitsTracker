@@ -9,12 +9,20 @@ enum TrackerRecordStoreErrors: Error {
     case recordTrackerIDError
 }
 
+protocol TrackerRecordStoreDelegate: AnyObject {
+    func updateCompletionStatistics(completedTrackersCnt: Int)
+}
+
 final class TrackerRecordStore: NSObject {
+    
+    weak var delegate: TrackerRecordStoreDelegate?
+    
     private let context: NSManagedObjectContext
     
     private lazy var fetchResultsController: NSFetchedResultsController<TrackerRecordCoreData> = {
         let fetchRequest = TrackerRecordCoreData.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+        
         let fetchRequestResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
         try? fetchRequestResultsController.performFetch()
         return fetchRequestResultsController
@@ -41,6 +49,8 @@ final class TrackerRecordStore: NSObject {
     init(context: NSManagedObjectContext) {
         self.context = context
         super.init()
+        
+        self.fetchResultsController.delegate = self
     }
     
     func addNewRecord(forTrackerWithID id: UUID, date: Date, to trackerCoreData: TrackerCoreData) {
@@ -81,5 +91,21 @@ final class TrackerRecordStore: NSObject {
         }
         
         return TrackerRecord(id: trackerID, date: recordDate)
+    }
+    
+    func getRecordsAmount() -> Int {
+        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        let count = try? context.count(for: fetchRequest)
+        guard let count = count else {
+            return 0
+        }
+        return count
+    }
+}
+
+extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        delegate?.updateCompletionStatistics(
+            completedTrackersCnt: getRecordsAmount())
     }
 }
