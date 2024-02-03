@@ -74,7 +74,7 @@ final class TrackersListViewController: UIViewController {
     private lazy var filtersButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Filters", for: .normal)
+        button.setTitle(NSLocalizedString("mainScreen.filters", comment: "Filters button on main screen"), for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.backgroundColor = UIColor(named: "YP Blue")
         button.layer.cornerRadius = 16
@@ -132,7 +132,7 @@ final class TrackersListViewController: UIViewController {
         self.navigationItem.searchController?.obscuresBackgroundDuringPresentation = false
         self.navigationItem.hidesSearchBarWhenScrolling = false
         
-        self.navigationItem.title = "Trackers"
+        self.navigationItem.title = NSLocalizedString("mainScreen.title", comment: "Title on main scren")
         self.navigationController?.navigationBar.prefersLargeTitles = true
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)

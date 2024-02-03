@@ -18,6 +18,8 @@
 		173A52202B29E8C6001A9CC6 /* PropertiesCollectionViewSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173A521F2B29E8C6001A9CC6 /* PropertiesCollectionViewSectionHeader.swift */; };
 		174A0C932B287EBF009F9EF2 /* EmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174A0C922B287EBF009F9EF2 /* EmojiCell.swift */; };
 		174A0C952B28C8B9009F9EF2 /* ColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174A0C942B28C8B9009F9EF2 /* ColorCell.swift */; };
+		174A8E1C2B6EC7FA001B1C50 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 174A8E1E2B6EC7FA001B1C50 /* Localizable.strings */; };
+		174A8E222B6ED111001B1C50 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 174A8E242B6ED111001B1C50 /* Localizable.stringsdict */; };
 		174C26412B27783200AB1A1F /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174C26402B27783200AB1A1F /* UIColor+Extensions.swift */; };
 		1761D6952B6ACAC900DE6AAB /* TrackerEditingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1761D6942B6ACAC800DE6AAB /* TrackerEditingViewController.swift */; };
 		1761F3482B55AB1D00AE5D0C /* TrackerCategoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1761F3472B55AB1D00AE5D0C /* TrackerCategoryViewModel.swift */; };
@@ -79,6 +81,10 @@
 		173A521F2B29E8C6001A9CC6 /* PropertiesCollectionViewSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertiesCollectionViewSectionHeader.swift; sourceTree = "<group>"; };
 		174A0C922B287EBF009F9EF2 /* EmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCell.swift; sourceTree = "<group>"; };
 		174A0C942B28C8B9009F9EF2 /* ColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCell.swift; sourceTree = "<group>"; };
+		174A8E1D2B6EC7FA001B1C50 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		174A8E1F2B6EC889001B1C50 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		174A8E232B6ED111001B1C50 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = ru; path = ru.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
+		174A8E252B6ED113001B1C50 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		174C26402B27783200AB1A1F /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		1761D6942B6ACAC800DE6AAB /* TrackerEditingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerEditingViewController.swift; sourceTree = "<group>"; };
 		1761F3472B55AB1D00AE5D0C /* TrackerCategoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryViewModel.swift; sourceTree = "<group>"; };
@@ -236,6 +242,15 @@
 			path = UIComponents;
 			sourceTree = "<group>";
 		};
+		174A8E192B6EC72E001B1C50 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				174A8E1E2B6EC7FA001B1C50 /* Localizable.strings */,
+				174A8E242B6ED111001B1C50 /* Localizable.stringsdict */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		17A5B27C2B39909B000BB8E2 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
@@ -288,6 +303,7 @@
 		17B8E7642AE0491B00875EE0 /* HabitsTracker */ = {
 			isa = PBXGroup;
 			children = (
+				174A8E192B6EC72E001B1C50 /* Resources */,
 				174A0C962B29E08C009F9EF2 /* UIComponents */,
 				17C23B002AE275BF003148BF /* Modules */,
 				173423162B1F420E003DE074 /* Extensions */,
@@ -451,6 +467,7 @@
 			knownRegions = (
 				en,
 				Base,
+				ru,
 			);
 			mainGroup = 17B8E7592AE0491B00875EE0;
 			packageReferences = (
@@ -480,6 +497,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				17B8E7722AE0491C00875EE0 /* LaunchScreen.storyboard in Resources */,
+				174A8E222B6ED111001B1C50 /* Localizable.stringsdict in Resources */,
+				174A8E1C2B6EC7FA001B1C50 /* Localizable.strings in Resources */,
 				17B8E76F2AE0491C00875EE0 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -635,6 +654,24 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		174A8E1E2B6EC7FA001B1C50 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				174A8E1D2B6EC7FA001B1C50 /* en */,
+				174A8E1F2B6EC889001B1C50 /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		174A8E242B6ED111001B1C50 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				174A8E232B6ED111001B1C50 /* ru */,
+				174A8E252B6ED113001B1C50 /* en */,
+			);
+			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
 		17B8E7702AE0491C00875EE0 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -699,6 +736,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -759,6 +797,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

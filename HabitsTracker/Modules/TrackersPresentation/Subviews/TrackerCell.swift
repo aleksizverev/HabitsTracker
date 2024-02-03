@@ -164,9 +164,10 @@ final class TrackerCell: UICollectionViewCell {
     }
     
     private func updateHabitStatisticsLabelDays() {
-        statisticsLabel.text = completionCounter == 1
-        ? String(completionCounter) + " day"
-        : String(completionCounter) + " days"
+        statisticsLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("numberOfDays", comment: "Tracker complations counter"),
+            completionCounter
+        )
     }
     
     private func updateCompletionButtonState() {
