@@ -492,7 +492,8 @@ extension TrackersListViewController: UICollectionViewDataSource {
             return 0
         }
         
-        if chosenFilter != "All trackers" {
+        if let chosenFilter, 
+            chosenFilter != "All trackers" {
             showNoSearchResultsScreen()
             return 0
         }

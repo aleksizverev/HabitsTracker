@@ -93,6 +93,10 @@ final class TrackerCategoryStore: NSObject {
                                             schedule: schedule))
         }
         
+        assignedTrackers = assignedTrackers.sorted {
+            $0.title > $1.title
+        }
+
         return TrackerCategory(title: categoryTitle,
                                assignedTrackers: assignedTrackers)
     }
