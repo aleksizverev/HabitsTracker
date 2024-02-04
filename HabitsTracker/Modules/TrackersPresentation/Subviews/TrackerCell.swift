@@ -207,7 +207,11 @@ final class TrackerCell: UICollectionViewCell {
         isAllowedToBeCompletedToday = isCompletionAlowed
         
         isPinned = isPinnedState
-        isPinnedState ? showPin() : hidePin()
+        if isPinnedState {
+            showPin()
+        } else {
+            hidePin()
+        }
     }
 }
 

@@ -71,11 +71,15 @@ final class TrackerCategoryViewController: UIViewController {
             let categoryCreationVC = TrackerCategoryCreationViewController()
             categoryCreationVC.delegate = self
             
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
             self.present(UINavigationController(rootViewController: categoryCreationVC), animated: true)
         }
         viewModel.onCategoryChoiceButtonTap = { [weak self] in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
             self.dismiss(animated: true)
         }
         

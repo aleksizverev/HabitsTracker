@@ -4,15 +4,20 @@ protocol TrackerScheduleViewControllerDelegate: AnyObject {
     func addSchedule(schedule: [Int])
 }
 
-final class TrackerScheduleViewController: UIViewController {
+final class TrackerScheduleViewController: UIViewController {    
     enum Weekdays: Int, CaseIterable {
-        case Moday = 1
-        case Tuesday
-        case Wednesday
-        case Thursday
-        case Friday
-        case Saturday
-        case Sunday
+        case monday = 1
+        case tuesday
+        case wednesday
+        case thursday
+        case friday
+        case saturday
+        case sunday
+
+        var capitalizedFirst: String {
+            let caseName = String(describing: self)
+            return caseName.prefix(1).uppercased() + caseName.dropFirst().lowercased()
+        }
     }
     
     weak var delegate: TrackerScheduleViewControllerDelegate?
@@ -113,7 +118,7 @@ extension TrackerScheduleViewController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.setupScheduleCell(labelText: String(describing: Weekdays.allCases[indexPath.row]),
+        cell.setupScheduleCell(labelText: String(describing: Weekdays.allCases[indexPath.row].capitalizedFirst),
                                switchTag: Weekdays.allCases[indexPath.row].rawValue)
         cell.switcher.addTarget(self,
                                 action: #selector(Self.onSwitchValueChanged(sender:)),

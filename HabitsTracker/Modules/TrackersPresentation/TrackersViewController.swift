@@ -12,8 +12,6 @@ final class TrackersListViewController: UIViewController {
     private let myCalendar = Calendar(identifier: .gregorian)
     
     // MARK: - LogicVariables
-    private let analyticsService = AnalyticsService()
-    
     private var allCategories: [TrackerCategory] = []
     
     private var visibleCategories: [TrackerCategory] = []
@@ -116,12 +114,12 @@ final class TrackersListViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        analyticsService.report(event: "close", params: ["screen": "Main"])
+        AnalyticsService.report(event: "close", params: ["screen": "Main"])
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        analyticsService.report(event: "open", params: ["screen": "Main"])
+        AnalyticsService.report(event: "open", params: ["screen": "Main"])
     }
     
     private func setupNavBar() {
@@ -248,7 +246,7 @@ final class TrackersListViewController: UIViewController {
     
     // MARK: - Selectors
     @objc private func createTrackerButtonDidTap() {
-        analyticsService.report(event: "click", params: ["screen": "Main", "item": "add_track"])
+        AnalyticsService.report(event: "click", params: ["screen": "Main", "item": "add_track"])
         let trackertypeChoiceVC = UINavigationController(rootViewController: TrackerTypeChoiceViewController())
         present(trackertypeChoiceVC, animated: true)
     }
@@ -259,7 +257,7 @@ final class TrackersListViewController: UIViewController {
     }
     
     @objc private func didTapFiltersButton() {
-        analyticsService.report(event: "click", params: ["screen": "Main", "item": "filter"])
+        AnalyticsService.report(event: "click", params: ["screen": "Main", "item": "filter"])
         let filtersVC = FiltersViewController()
         filtersVC.delegate = self
         
@@ -583,7 +581,7 @@ extension TrackersListViewController: TrackerCellDelegate {
     }
     
     func editTracker(id: UUID, counter: Int) {
-        analyticsService.report(event: "click", params: ["screen": "Main", "item": "edit"])
+        AnalyticsService.report(event: "click", params: ["screen": "Main", "item": "edit"])
         guard let tracker = try? trackerStore.tracker(from: trackerStore.getTracker(withID: id)) else {
             return
         }
@@ -605,12 +603,12 @@ extension TrackersListViewController: TrackerCellDelegate {
     }
     
     func deleteTracker(id: UUID) {
-        analyticsService.report(event: "click", params: ["screen": "Main", "item": "delete"])
+        AnalyticsService.report(event: "click", params: ["screen": "Main", "item": "delete"])
         presentDeleteAlertController(forTrackerWithID: id)
     }
     
     func recordTrackerCompletionForSelectedDate(id: UUID) {
-        analyticsService.report(event: "click", params: ["screen": "Main", "item": "track"])
+        AnalyticsService.report(event: "click", params: ["screen": "Main", "item": "track"])
         var newRecordList = completedTrackers
         newRecordList.append(TrackerRecord(id: id, date: currentDatePickerDateValue))
         completedTrackers = newRecordList
