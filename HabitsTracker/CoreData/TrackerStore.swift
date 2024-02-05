@@ -3,6 +3,7 @@ import CoreData
 
 enum TrackerStorageErrors: Error {
     case getTrackerByIDError
+    case getTrackerCategoryError
     case trackerCastError
     case trackerIDError
     case trackerTitleError
@@ -75,6 +76,29 @@ final class TrackerStore: NSObject {
                        schedule: schedule)
     }
     
+    func getTrackerCategory(withID id: UUID) throws -> String {
+        let tracker = try getTracker(withID: id)
+        
+        guard let category = tracker.category?.title else {
+            throw TrackerStorageErrors.getTrackerCategoryError
+        }
+        return category
+    }
+    
+    func updateTracker(withID id: UUID,
+                       usingDataFrom tracker: Tracker,
+                       inCategory category: TrackerCategoryCoreData) throws {
+        let trackerToUpdate = try getTracker(withID: id)
+        trackerToUpdate.title = tracker.title
+        trackerToUpdate.color = uiColorMarshalling.hexString(from: tracker.color)
+        trackerToUpdate.emoji = tracker.emoji
+        trackerToUpdate.schedule = tracker.schedule
+        
+        trackerToUpdate.category?.removeFromTracker(trackerToUpdate)
+        category.addToTracker(trackerToUpdate)
+        try? context.save()
+    }
+    
     func createNewTracker(tracker: Tracker, to categoryCoreData: TrackerCategoryCoreData) {
         let newTracker = TrackerCoreData(context: context)
         newTracker.trackerID = tracker.id
@@ -96,6 +120,41 @@ final class TrackerStore: NSObject {
             throw TrackerStorageErrors.getTrackerByIDError
         }
         return tracker
+    }
+    
+    func deleteTracker(withID id: UUID) throws {
+        let tracker = try getTracker(withID: id)
+        context.delete(tracker)
+        try? context.save()
+    }
+    
+    func changePinStateForTracker(withID id: UUID) throws {
+        guard let tracker = try? getTracker(withID: id) else {
+            throw TrackerStorageErrors.getTrackerByIDError
+        }
+        let state = tracker.isPinned
+        tracker.isPinned = !state
+        try? context.save()
+    }
+    
+    func getPinnedTrackers() -> [Tracker] {
+        let request = TrackerCoreData.fetchRequest()
+        request.returnsObjectsAsFaults = false
+        request.predicate = NSPredicate(format: "%K == %@", #keyPath(TrackerCoreData.isPinned), NSNumber(value: true))
+        
+        let trackers = try? context.fetch(request)
+        
+        guard let trackers = trackers else {
+            return []
+        }
+        
+        let pinnedTrackers = try? trackers.map({ try tracker(from: $0) })
+        
+        guard let pinnedTrackers = pinnedTrackers else {
+            return []
+        }
+        
+        return pinnedTrackers
     }
 }
 

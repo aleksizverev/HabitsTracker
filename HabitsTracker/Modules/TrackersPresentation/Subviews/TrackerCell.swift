@@ -3,9 +3,14 @@ import UIKit
 protocol TrackerCellDelegate: AnyObject {
     func recordTrackerCompletionForSelectedDate(id: UUID)
     func removeTrackerCompletionForSelectedDate(id: UUID)
+    func changePinState(id: UUID)
+    func editTracker(id: UUID, counter: Int)
+    func deleteTracker(id: UUID)
 }
 
 final class TrackerCell: UICollectionViewCell {
+    let colors = Colors()
+    
     weak var delegate: TrackerCellDelegate?
     
     private var completionCounter: Int = 0 {
@@ -19,6 +24,8 @@ final class TrackerCell: UICollectionViewCell {
             updateCompletionButtonState()
         }
     }
+    
+    private var isPinned: Bool = false
     
     private var isAllowedToBeCompletedToday: Bool = false
     
@@ -71,8 +78,15 @@ final class TrackerCell: UICollectionViewCell {
         button.setImage(UIImage(systemName: "plus") ?? UIImage(), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.layer.cornerRadius = 16
-        button.tintColor = .white
+        button.tintColor = colors.completeTrackerButtonColor
         return button
+    }()
+    
+    private lazy var pinImageView: UIImageView = {
+        let image = UIImage(named: "Pin")
+        let imageView = UIImageView(image: image)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
     }()
     
     override init(frame: CGRect) {
@@ -109,6 +123,7 @@ final class TrackerCell: UICollectionViewCell {
         
         cellDescriptionView.addSubview(habitDescriptionLabel)
         cellDescriptionView.addSubview(emojiLabel)
+        cellDescriptionView.addSubview(pinImageView)
     }
     
     private func applyConstraints() {
@@ -121,6 +136,9 @@ final class TrackerCell: UICollectionViewCell {
             
             emojiLabel.leadingAnchor.constraint(equalTo: cellDescriptionView.leadingAnchor, constant: 12),
             emojiLabel.topAnchor.constraint(equalTo: cellDescriptionView.topAnchor, constant: 12),
+            
+            pinImageView.trailingAnchor.constraint(equalTo: cellDescriptionView.trailingAnchor, constant: -4),
+            pinImageView.topAnchor.constraint(equalTo: cellDescriptionView.topAnchor, constant: 12),
             
             habitDescriptionLabel.leadingAnchor.constraint(equalTo: cellDescriptionView.leadingAnchor, constant: 12),
             habitDescriptionLabel.trailingAnchor.constraint(equalTo: cellDescriptionView.trailingAnchor, constant: -12),
@@ -137,10 +155,19 @@ final class TrackerCell: UICollectionViewCell {
         ])
     }
     
+    private func showPin() {
+        pinImageView.isHidden = false
+    }
+    
+    private func hidePin() {
+        pinImageView.isHidden = true
+    }
+    
     private func updateHabitStatisticsLabelDays() {
-        statisticsLabel.text = completionCounter == 1
-        ? String(completionCounter) + " day"
-        : String(completionCounter) + " days"
+        statisticsLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("numberOfDays", comment: "Tracker complations counter"),
+            completionCounter
+        )
     }
     
     private func updateCompletionButtonState() {
@@ -160,14 +187,53 @@ final class TrackerCell: UICollectionViewCell {
                           trackerID: UUID,
                           counter: Int,
                           completionFlag: Bool,
-                          isCompletionAlowed: Bool) {
+                          isCompletionAlowed: Bool,
+                          isPinnedState: Bool
+    ) {
+        
         habitDescriptionLabel.text = descriptionName
         emojiLabel.text = emoji
+        
+        let interaction = UIContextMenuInteraction(delegate: self)
+        cellDescriptionView.addInteraction(interaction)
         cellDescriptionView.backgroundColor = descriptionViewBackgroundColor
+        
         completionButton.backgroundColor = completionButtonTintColor
         completionCounter = counter
+        
         trackerId = trackerID
+        
         isCompletedToday = completionFlag
         isAllowedToBeCompletedToday = isCompletionAlowed
+        
+        isPinned = isPinnedState
+        if isPinnedState {
+            showPin()
+        } else {
+            hidePin()
+        }
+    }
+}
+
+extension TrackerCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(actionProvider: { [weak self] _ in
+        
+            guard let self = self else {
+                return UIMenu()
+            }
+            
+            let pinAction = UIAction(title: isPinned ? "Unpin" : "Pin") { _ in
+                self.delegate?.changePinState(id: self.trackerId)
+            }
+            let editAction = UIAction(title: "Edit") { _ in
+                self.delegate?.editTracker(id: self.trackerId, counter: self.completionCounter)
+            }
+            let deleteAction = UIAction(title: "Delete", attributes: .destructive) { _ in
+                self.delegate?.deleteTracker(id: self.trackerId)
+            }
+            
+            return UIMenu(title: "", children: [pinAction, editAction, deleteAction])
+        })
     }
 }
